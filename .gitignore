@@ -3,3 +3,5 @@ playwright-report/
 test-results/
 .preview/
 .DS_Store
+__pycache__/
+*.py[cod]
