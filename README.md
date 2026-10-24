@@ -8,6 +8,7 @@ Intended GitHub Pages address: <https://iairplane.github.io/tactile_agent_page/>
 ## Included
 
 - An original responsive project page with an interactive architecture diagram.
+- A 2:54 English narrated framework film: seven video stages, genuine hand segmentation/keypoints, relative interaction, a tactile primitive tree, task-policy code, and recorded bottle execution.
 - Two English experiment explainers: top nested cup (72.6 s) and press-and-turn cap (66 s).
 - A silent 16.5 s real-robot preview, with playback speeds and experiment status labelled.
 - Interactive experiment stages that seek to the relevant video segment.
@@ -16,6 +17,23 @@ Intended GitHub Pages address: <https://iairplane.github.io/tactile_agent_page/>
 - Source provenance, evidence distinctions, editable Markdown, and media reproduction tooling.
 
 The author block is deliberately omitted. The owner's provisional information is in `docs/editorial-notes.md`, pending confirmation.
+
+## Framework film
+
+`assets/bottle-framework-film_EN.mp4` is the final 1920×1080, 30 fps film with English neural narration, burned-in word-timed captions, and embedded chapters. Separate SRT/VTT and a provenance manifest accompany it. The website offers chapter seeking.
+
+The human demonstration is segmented into seven semantic video nodes. New SAM 2.1 / RTMPose outputs are genuine offline reprocessing on that recording. The film explicitly labels the architecture illustration and the recorded task-specific controller. The torque branch is visible but unselected for Run16.
+
+Editable narration and story are under `production/bottle_story/`; large editing intermediates stay local. To reproduce the render with the original sibling research recordings available:
+
+```bash
+python scripts/render_bottle_story.py --preview
+python scripts/render_bottle_story.py
+# Regenerate narration with production/bottle_story/audio/synthesize.py if needed.
+python scripts/finalize_bottle_story.py
+```
+
+Requires Python with Pillow, NumPy and OpenCV; FFmpeg; and Lato/DejaVu fonts. Narration regeneration also requires `edge-tts` and network access. The final website has no synthesis or model dependencies.
 
 ## Preview locally
 

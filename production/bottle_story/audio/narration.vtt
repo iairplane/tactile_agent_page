@@ -1,0 +1,201 @@
+WEBVTT
+
+1
+00:00:00.345 --> 00:00:01.560
+One demonstration.
+
+2
+00:00:02.243 --> 00:00:06.142
+A robot plans the motion, transfers the interaction, and checks progress
+
+3
+00:00:06.162 --> 00:00:06.859
+through touch.
+
+4
+00:00:08.349 --> 00:00:12.722
+Here, a person presses and twists a safety cap, resets their grip, then
+
+5
+00:00:12.742 --> 00:00:13.509
+removes it.
+
+6
+00:00:14.245 --> 00:00:17.003
+The demonstration gives us the structure of a task.
+
+7
+00:00:20.345 --> 00:00:21.884
+Each segment becomes a node:
+
+8
+00:00:21.929 --> 00:00:26.854
+approach, grasp and press, twist, reset and regrasp, check release, lift, and
+
+9
+00:00:26.874 --> 00:00:27.755
+place aside.
+
+10
+00:00:28.420 --> 00:00:30.093
+The agent plans free motion.
+
+11
+00:00:30.775 --> 00:00:33.754
+At contact, it preserves object-relative geometry.
+
+12
+00:00:34.424 --> 00:00:36.064
+Touch governs transitions.
+
+13
+00:00:36.734 --> 00:00:38.910
+Placement belongs to the human demonstration;
+
+14
+00:00:39.089 --> 00:00:40.696
+the robot run ends at lift.
+
+15
+00:00:42.349 --> 00:00:45.313
+Perception locates the object and follows the hand.
+
+16
+00:00:46.049 --> 00:00:47.896
+Masks separate image regions;
+
+17
+00:00:48.039 --> 00:00:50.323
+keypoints describe hand configuration.
+
+18
+00:00:51.073 --> 00:00:54.548
+These overlays connect the task stages to visible evidence in the
+
+19
+00:00:54.568 --> 00:00:55.517
+demonstration.
+
+20
+00:00:58.349 --> 00:01:02.673
+At contact, the hand's position and orientation are expressed relative to the
+
+21
+00:01:02.693 --> 00:01:03.400
+object.
+
+22
+00:01:04.136 --> 00:01:07.598
+A gripper adapter maps this relation to robot geometry.
+
+23
+00:01:08.347 --> 00:01:11.469
+Grounding it in the current scene produces a robot target.
+
+24
+00:01:14.349 --> 00:01:17.167
+For free-space stages, the agent sets a goal.
+
+25
+00:01:17.915 --> 00:01:21.777
+A motion planner connects that goal to the robot's current configuration.
+
+26
+00:01:24.347 --> 00:01:28.220
+The tactile library branches into images, forces, and torques.
+
+27
+00:01:28.923 --> 00:01:31.348
+Each supports different contact primitives.
+
+28
+00:01:32.054 --> 00:01:36.686
+For this bottle, select contact, pressing, contact retention, and release.
+
+29
+00:01:37.393 --> 00:01:40.658
+The recorded controller uses changes in raw force channels.
+
+30
+00:01:41.364 --> 00:01:44.549
+Torque is a possible input, but was not used in this run.
+
+31
+00:01:46.346 --> 00:01:48.877
+The selected primitives become task conditions.
+
+32
+00:01:49.576 --> 00:01:52.004
+This illustrative policy shows the composition:
+
+33
+00:01:52.225 --> 00:01:56.505
+wait for pressing evidence, rotate while contact remains, reset and regrasp
+
+34
+00:01:56.525 --> 00:01:59.171
+when needed, then verify release before lifting.
+
+35
+00:01:59.874 --> 00:02:02.680
+The recorded hardware executor is task-specific.
+
+36
+00:02:04.346 --> 00:02:05.960
+Now the robot executes.
+
+37
+00:02:06.647 --> 00:02:08.914
+Pressing evidence permits the first twist.
+
+38
+00:02:09.606 --> 00:02:11.070
+The first turn feeds down;
+
+39
+00:02:11.257 --> 00:02:13.089
+later turns follow the thread upward.
+
+40
+00:02:13.780 --> 00:02:18.077
+Between segments, the robot unloads, resets its wrist, and regrasps.
+
+41
+00:02:18.780 --> 00:02:22.888
+Six ninety-degree segments produce five hundred and forty degrees, with five
+
+42
+00:02:22.908 --> 00:02:24.579
+automatic reset cycles.
+
+43
+00:02:26.346 --> 00:02:28.541
+Turn count alone does not permit lifting.
+
+44
+00:02:29.248 --> 00:02:33.036
+Resistance must build, then stay low in fresh measurements while contact
+
+45
+00:02:33.056 --> 00:02:33.769
+remains.
+
+46
+00:02:34.468 --> 00:02:36.686
+A stationary check confirms release.
+
+47
+00:02:37.384 --> 00:02:40.987
+The final reading falls below the recorded threshold, and the controller
+
+48
+00:02:41.007 --> 00:02:42.739
+permits a thirty-millimetre lift.
+
+49
+00:02:44.349 --> 00:02:48.285
+Tactile Agent connects demonstrated intent and object-relative interaction
+
+50
+00:02:48.305 --> 00:02:51.936
+with robot motion, supervised by task-specific touch.

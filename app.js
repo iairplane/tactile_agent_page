@@ -138,6 +138,15 @@ $$('[data-gate]').forEach((button) => button.addEventListener('click', () => {
 }));
 
 const svgNS = 'http://www.w3.org/2000/svg';
+const frameworkVideo = $('#framework-video');
+$$('[data-film-time]').forEach((button) => button.addEventListener('click', async () => {
+  if (frameworkVideo.readyState < 1) await new Promise((resolve) => frameworkVideo.addEventListener('loadedmetadata', resolve, { once: true }));
+  frameworkVideo.currentTime = Number(button.dataset.filmTime);
+  heroVideo.pause(); taskVideo.pause();
+  try { await frameworkVideo.play(); } catch { /* Native controls remain available. */ }
+}));
+frameworkVideo.addEventListener('play', () => { heroVideo.pause(); taskVideo.pause(); });
+document.addEventListener('visibilitychange', () => { if (document.hidden) frameworkVideo.pause(); });
 function svgElement(name, attributes, text) { const element = document.createElementNS(svgNS, name); Object.entries(attributes).forEach(([key,value]) => element.setAttribute(key, value)); if (text !== undefined) element.textContent = text; return element; }
 function drawSignal(data) {
   const chart = $('#signal-chart');

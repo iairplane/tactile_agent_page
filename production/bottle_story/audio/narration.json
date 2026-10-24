@@ -1,0 +1,390 @@
+{
+  "title": "Tactile Agent \u2014 One demonstration, task-specific touch",
+  "voice": "en-US-AriaNeural",
+  "disclosure": "Synthetic English narration generated with a neural text-to-speech voice. Not a recording of any project author.",
+  "duration": 174,
+  "scenes": [
+    {
+      "id": "hook",
+      "start": 0,
+      "end": 8,
+      "text": "One demonstration. A robot plans the motion, transfers the interaction, and checks progress through touch.",
+      "audio_file": "hook.wav",
+      "raw_audio_file": "hook.mp3",
+      "voice_rate_percent": 11,
+      "speech_duration": 7.32,
+      "subtitles": [
+        {
+          "start": 0.345,
+          "end": 1.56,
+          "text": "One demonstration."
+        },
+        {
+          "start": 2.243,
+          "end": 6.142,
+          "text": "A robot plans the motion, transfers the interaction, and checks progress"
+        },
+        {
+          "start": 6.162,
+          "end": 6.859,
+          "text": "through touch."
+        }
+      ]
+    },
+    {
+      "id": "human_demo",
+      "start": 8,
+      "end": 20,
+      "text": "Here, a person presses and twists a safety cap, resets their grip, then removes it. The demonstration gives us the structure of a task.",
+      "audio_file": "human_demo.wav",
+      "raw_audio_file": "human_demo.mp3",
+      "voice_rate_percent": 3,
+      "speech_duration": 9.504,
+      "subtitles": [
+        {
+          "start": 8.349,
+          "end": 12.722000000000001,
+          "text": "Here, a person presses and twists a safety cap, resets their grip, then"
+        },
+        {
+          "start": 12.742,
+          "end": 13.509,
+          "text": "removes it."
+        },
+        {
+          "start": 14.245,
+          "end": 17.003,
+          "text": "The demonstration gives us the structure of a task."
+        }
+      ]
+    },
+    {
+      "id": "stage_graph",
+      "start": 20,
+      "end": 42,
+      "text": "Each segment becomes a node: approach, grasp and press, twist, reset and regrasp, check release, lift, and place aside. The agent plans free motion. At contact, it preserves object-relative geometry. Touch governs transitions. Placement belongs to the human demonstration; the robot run ends at lift.",
+      "audio_file": "stage_graph.wav",
+      "raw_audio_file": "stage_graph.mp3",
+      "voice_rate_percent": 12,
+      "speech_duration": 21.12,
+      "subtitles": [
+        {
+          "start": 20.345,
+          "end": 21.884,
+          "text": "Each segment becomes a node:"
+        },
+        {
+          "start": 21.929,
+          "end": 26.854,
+          "text": "approach, grasp and press, twist, reset and regrasp, check release, lift, and"
+        },
+        {
+          "start": 26.874,
+          "end": 27.755,
+          "text": "place aside."
+        },
+        {
+          "start": 28.42,
+          "end": 30.093,
+          "text": "The agent plans free motion."
+        },
+        {
+          "start": 30.775,
+          "end": 33.754,
+          "text": "At contact, it preserves object-relative geometry."
+        },
+        {
+          "start": 34.424,
+          "end": 36.064,
+          "text": "Touch governs transitions."
+        },
+        {
+          "start": 36.734,
+          "end": 38.91,
+          "text": "Placement belongs to the human demonstration;"
+        },
+        {
+          "start": 39.089,
+          "end": 40.696,
+          "text": "the robot run ends at lift."
+        }
+      ]
+    },
+    {
+      "id": "perception",
+      "start": 42,
+      "end": 58,
+      "text": "Perception locates the object and follows the hand. Masks separate image regions; keypoints describe hand configuration. These overlays connect the task stages to visible evidence in the demonstration.",
+      "audio_file": "perception.wav",
+      "raw_audio_file": "perception.mp3",
+      "voice_rate_percent": 3,
+      "speech_duration": 14.016,
+      "subtitles": [
+        {
+          "start": 42.349,
+          "end": 45.313,
+          "text": "Perception locates the object and follows the hand."
+        },
+        {
+          "start": 46.049,
+          "end": 47.896,
+          "text": "Masks separate image regions;"
+        },
+        {
+          "start": 48.039,
+          "end": 50.323,
+          "text": "keypoints describe hand configuration."
+        },
+        {
+          "start": 51.073,
+          "end": 54.547999999999995,
+          "text": "These overlays connect the task stages to visible evidence in the"
+        },
+        {
+          "start": 54.568,
+          "end": 55.517,
+          "text": "demonstration."
+        }
+      ]
+    },
+    {
+      "id": "relative_geometry",
+      "start": 58,
+      "end": 74,
+      "text": "At contact, the hand's position and orientation are expressed relative to the object. A gripper adapter maps this relation to robot geometry. Grounding it in the current scene produces a robot target.",
+      "audio_file": "relative_geometry.wav",
+      "raw_audio_file": "relative_geometry.mp3",
+      "voice_rate_percent": 3,
+      "speech_duration": 13.968,
+      "subtitles": [
+        {
+          "start": 58.349,
+          "end": 62.672999999999995,
+          "text": "At contact, the hand's position and orientation are expressed relative to the"
+        },
+        {
+          "start": 62.693,
+          "end": 63.4,
+          "text": "object."
+        },
+        {
+          "start": 64.136,
+          "end": 67.598,
+          "text": "A gripper adapter maps this relation to robot geometry."
+        },
+        {
+          "start": 68.347,
+          "end": 71.469,
+          "text": "Grounding it in the current scene produces a robot target."
+        }
+      ]
+    },
+    {
+      "id": "free_space_plan",
+      "start": 74,
+      "end": 84,
+      "text": "For free-space stages, the agent sets a goal. A motion planner connects that goal to the robot's current configuration.",
+      "audio_file": "free_space_plan.wav",
+      "raw_audio_file": "free_space_plan.mp3",
+      "voice_rate_percent": 3,
+      "speech_duration": 8.28,
+      "subtitles": [
+        {
+          "start": 74.349,
+          "end": 77.167,
+          "text": "For free-space stages, the agent sets a goal."
+        },
+        {
+          "start": 77.915,
+          "end": 81.777,
+          "text": "A motion planner connects that goal to the robot's current configuration."
+        }
+      ]
+    },
+    {
+      "id": "tactile_tree",
+      "start": 84,
+      "end": 106,
+      "text": "The tactile library branches into images, forces, and torques. Each supports different contact primitives. For this bottle, select contact, pressing, contact retention, and release. The recorded controller uses changes in raw force channels. Torque is a possible input, but was not used in this run.",
+      "audio_file": "tactile_tree.wav",
+      "raw_audio_file": "tactile_tree.mp3",
+      "voice_rate_percent": 7,
+      "speech_duration": 21.024,
+      "subtitles": [
+        {
+          "start": 84.347,
+          "end": 88.22,
+          "text": "The tactile library branches into images, forces, and torques."
+        },
+        {
+          "start": 88.923,
+          "end": 91.348,
+          "text": "Each supports different contact primitives."
+        },
+        {
+          "start": 92.054,
+          "end": 96.686,
+          "text": "For this bottle, select contact, pressing, contact retention, and release."
+        },
+        {
+          "start": 97.393,
+          "end": 100.658,
+          "text": "The recorded controller uses changes in raw force channels."
+        },
+        {
+          "start": 101.364,
+          "end": 104.549,
+          "text": "Torque is a possible input, but was not used in this run."
+        }
+      ]
+    },
+    {
+      "id": "task_policy",
+      "start": 106,
+      "end": 124,
+      "text": "The selected primitives become task conditions. This illustrative policy shows the composition: wait for pressing evidence, rotate while contact remains, reset and regrasp when needed, then verify release before lifting. The recorded hardware executor is task-specific.",
+      "audio_file": "task_policy.wav",
+      "raw_audio_file": "task_policy.mp3",
+      "voice_rate_percent": 9,
+      "speech_duration": 17.136,
+      "subtitles": [
+        {
+          "start": 106.346,
+          "end": 108.877,
+          "text": "The selected primitives become task conditions."
+        },
+        {
+          "start": 109.576,
+          "end": 112.004,
+          "text": "This illustrative policy shows the composition:"
+        },
+        {
+          "start": 112.225,
+          "end": 116.50500000000001,
+          "text": "wait for pressing evidence, rotate while contact remains, reset and regrasp"
+        },
+        {
+          "start": 116.525,
+          "end": 119.171,
+          "text": "when needed, then verify release before lifting."
+        },
+        {
+          "start": 119.874,
+          "end": 122.68,
+          "text": "The recorded hardware executor is task-specific."
+        }
+      ]
+    },
+    {
+      "id": "robot_loop",
+      "start": 124,
+      "end": 146,
+      "text": "Now the robot executes. Pressing evidence permits the first twist. The first turn feeds down; later turns follow the thread upward. Between segments, the robot unloads, resets its wrist, and regrasps. Six ninety-degree segments produce five hundred and forty degrees, with five automatic reset cycles.",
+      "audio_file": "robot_loop.wav",
+      "raw_audio_file": "robot_loop.mp3",
+      "voice_rate_percent": 9,
+      "speech_duration": 21.024,
+      "subtitles": [
+        {
+          "start": 124.346,
+          "end": 125.96,
+          "text": "Now the robot executes."
+        },
+        {
+          "start": 126.647,
+          "end": 128.914,
+          "text": "Pressing evidence permits the first twist."
+        },
+        {
+          "start": 129.606,
+          "end": 131.07,
+          "text": "The first turn feeds down;"
+        },
+        {
+          "start": 131.257,
+          "end": 133.089,
+          "text": "later turns follow the thread upward."
+        },
+        {
+          "start": 133.78,
+          "end": 138.077,
+          "text": "Between segments, the robot unloads, resets its wrist, and regrasps."
+        },
+        {
+          "start": 138.78,
+          "end": 142.88799999999998,
+          "text": "Six ninety-degree segments produce five hundred and forty degrees, with five"
+        },
+        {
+          "start": 142.908,
+          "end": 144.579,
+          "text": "automatic reset cycles."
+        }
+      ]
+    },
+    {
+      "id": "release_gate",
+      "start": 146,
+      "end": 164,
+      "text": "Turn count alone does not permit lifting. Resistance must build, then stay low in fresh measurements while contact remains. A stationary check confirms release. The final reading falls below the recorded threshold, and the controller permits a thirty-millimetre lift.",
+      "audio_file": "release_gate.wav",
+      "raw_audio_file": "release_gate.mp3",
+      "voice_rate_percent": 8,
+      "speech_duration": 17.208,
+      "subtitles": [
+        {
+          "start": 146.346,
+          "end": 148.541,
+          "text": "Turn count alone does not permit lifting."
+        },
+        {
+          "start": 149.248,
+          "end": 153.036,
+          "text": "Resistance must build, then stay low in fresh measurements while contact"
+        },
+        {
+          "start": 153.056,
+          "end": 153.769,
+          "text": "remains."
+        },
+        {
+          "start": 154.468,
+          "end": 156.686,
+          "text": "A stationary check confirms release."
+        },
+        {
+          "start": 157.384,
+          "end": 160.987,
+          "text": "The final reading falls below the recorded threshold, and the controller"
+        },
+        {
+          "start": 161.007,
+          "end": 162.739,
+          "text": "permits a thirty-millimetre lift."
+        }
+      ]
+    },
+    {
+      "id": "conclusion",
+      "start": 164,
+      "end": 174,
+      "text": "Tactile Agent connects demonstrated intent and object-relative interaction with robot motion, supervised by task-specific touch.",
+      "audio_file": "conclusion.wav",
+      "raw_audio_file": "conclusion.mp3",
+      "voice_rate_percent": 3,
+      "speech_duration": 8.448,
+      "subtitles": [
+        {
+          "start": 164.349,
+          "end": 168.285,
+          "text": "Tactile Agent connects demonstrated intent and object-relative interaction"
+        },
+        {
+          "start": 168.305,
+          "end": 171.936,
+          "text": "with robot motion, supervised by task-specific touch."
+        }
+      ]
+    }
+  ]
+}

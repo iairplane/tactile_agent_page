@@ -1,0 +1,320 @@
+{
+  "schema": "tactile-agent.bottle-story-evidence.v1",
+  "demo_clip": "human-demo.mp4",
+  "demo_source": "runs/live/medicine_bottle_demo_20261023_01/analysis/demo_trim_1110_1274.mp4",
+  "source_fps": 15,
+  "demo_first_source_frame": 1110,
+  "demo_last_source_frame": 1274,
+  "stage_plan_source": "runs/live/medicine_bottle_demo_20261023_01/analysis/stage_plan.json",
+  "nodes": [
+    {
+      "id": "approach",
+      "title": "Approach the cap",
+      "clip": "stage-approach.mp4",
+      "poster": "stage-approach.jpg",
+      "frame_start": 1119,
+      "frame_end": 1142,
+      "source_interval_s": [
+        74.6,
+        76.13333333333334
+      ],
+      "demo_clip_interval_s": [
+        0.6,
+        2.1333333333333333
+      ],
+      "authority": "agent_plan",
+      "fps": 15,
+      "playback_rate": 1
+    },
+    {
+      "id": "grasp",
+      "title": "Grasp + press",
+      "clip": "stage-grasp.mp4",
+      "poster": "stage-grasp.jpg",
+      "frame_start": 1142,
+      "frame_end": 1152,
+      "source_interval_s": [
+        76.13333333333334,
+        76.8
+      ],
+      "demo_clip_interval_s": [
+        2.1333333333333333,
+        2.8
+      ],
+      "authority": "relative_pose_plus_tactile",
+      "fps": 15,
+      "playback_rate": 1
+    },
+    {
+      "id": "twist",
+      "title": "Twist around the bottle axis",
+      "clip": "stage-twist.mp4",
+      "poster": "stage-twist.jpg",
+      "frame_start": 1152,
+      "frame_end": 1183,
+      "source_interval_s": [
+        76.8,
+        78.86666666666666
+      ],
+      "demo_clip_interval_s": [
+        2.8,
+        4.866666666666666
+      ],
+      "authority": "object_frame_action_plus_tactile",
+      "fps": 15,
+      "playback_rate": 1
+    },
+    {
+      "id": "regrasp",
+      "title": "Reset wrist + regrasp",
+      "clip": "stage-regrasp.mp4",
+      "poster": "stage-regrasp.jpg",
+      "frame_start": 1183,
+      "frame_end": 1189,
+      "source_interval_s": [
+        78.86666666666666,
+        79.26666666666667
+      ],
+      "demo_clip_interval_s": [
+        4.866666666666666,
+        5.266666666666667
+      ],
+      "authority": "agent_plan_constrained_by_contact",
+      "fps": 15,
+      "playback_rate": 1
+    },
+    {
+      "id": "repeat",
+      "title": "Repeat until released",
+      "clip": "stage-repeat.mp4",
+      "poster": "stage-repeat.jpg",
+      "frame_start": 1189,
+      "frame_end": 1248,
+      "source_interval_s": [
+        79.26666666666667,
+        83.2
+      ],
+      "demo_clip_interval_s": [
+        5.266666666666667,
+        9.2
+      ],
+      "authority": "object_frame_action_plus_tactile",
+      "fps": 15,
+      "playback_rate": 1
+    },
+    {
+      "id": "lift",
+      "title": "Lift the cap",
+      "clip": "stage-lift.mp4",
+      "poster": "stage-lift.jpg",
+      "frame_start": 1248,
+      "frame_end": 1253,
+      "source_interval_s": [
+        83.2,
+        83.53333333333333
+      ],
+      "demo_clip_interval_s": [
+        9.2,
+        9.533333333333333
+      ],
+      "authority": "agent_plan_after_release",
+      "fps": 15,
+      "playback_rate": 1
+    },
+    {
+      "id": "place",
+      "title": "Place aside",
+      "clip": "stage-place.mp4",
+      "poster": "stage-place.jpg",
+      "frame_start": 1253,
+      "frame_end": 1265,
+      "source_interval_s": [
+        83.53333333333333,
+        84.33333333333333
+      ],
+      "demo_clip_interval_s": [
+        9.533333333333333,
+        10.333333333333334
+      ],
+      "authority": "agent_plan",
+      "fps": 15,
+      "playback_rate": 1
+    }
+  ],
+  "grouping_note": "Eleven saved fine-grained observed intervals grouped into seven visual nodes. Repeat combines TWIST_2, REGRASP_2, TWIST_3, REGRASP_3 and FINAL_TWIST_AND_RELEASE_CHECK. These are an interpretation of the recorded human demonstration, not evidence all stages were robot-executed.",
+  "perception": [
+    {
+      "frame_index": 1146,
+      "rgb": "perception/rgb/001146.png",
+      "mask_overlay": "perception/001146_mask_overlay.png",
+      "pose_overlay": "perception/001146_pose_overlay.png",
+      "triptych": "perception/001146_triptych.jpg",
+      "rgb_crop": "perception/001146_rgb_crop.png",
+      "mask_crop": "perception/001146_mask_crop.png",
+      "pose_crop": "perception/001146_pose_crop.png",
+      "crop_xyxy": [
+        320,
+        135,
+        600,
+        415
+      ],
+      "source_interval_s": 76.4,
+      "models": {
+        "mask": "SAM 2.1 Hiera Small",
+        "hand_pose": "RTMPose-m Hand5 ONNX"
+      },
+      "provenance": "Actual model inference on recorded demonstration, offline reprocessing for explanatory film. SAM uses explicitly recorded manual box prompts. RTMPose predicts 21 joints; occluded joints are estimates. Not the live robot execution input.",
+      "hand_sam_score": 0.97265625,
+      "bottle_sam_score": 0.96484375,
+      "keypoint_display_threshold": 0.3
+    },
+    {
+      "frame_index": 1168,
+      "rgb": "perception/rgb/001168.png",
+      "mask_overlay": "perception/001168_mask_overlay.png",
+      "pose_overlay": "perception/001168_pose_overlay.png",
+      "triptych": "perception/001168_triptych.jpg",
+      "rgb_crop": "perception/001168_rgb_crop.png",
+      "mask_crop": "perception/001168_mask_crop.png",
+      "pose_crop": "perception/001168_pose_crop.png",
+      "crop_xyxy": [
+        320,
+        135,
+        600,
+        415
+      ],
+      "source_interval_s": 77.86666666666666,
+      "models": {
+        "mask": "SAM 2.1 Hiera Small",
+        "hand_pose": "RTMPose-m Hand5 ONNX"
+      },
+      "provenance": "Actual model inference on recorded demonstration, offline reprocessing for explanatory film. SAM uses explicitly recorded manual box prompts. RTMPose predicts 21 joints; occluded joints are estimates. Not the live robot execution input.",
+      "hand_sam_score": 0.9765625,
+      "bottle_sam_score": 0.96875,
+      "keypoint_display_threshold": 0.3
+    },
+    {
+      "frame_index": 1205,
+      "rgb": "perception/rgb/001205.png",
+      "mask_overlay": "perception/001205_mask_overlay.png",
+      "pose_overlay": "perception/001205_pose_overlay.png",
+      "triptych": "perception/001205_triptych.jpg",
+      "rgb_crop": "perception/001205_rgb_crop.png",
+      "mask_crop": "perception/001205_mask_crop.png",
+      "pose_crop": "perception/001205_pose_crop.png",
+      "crop_xyxy": [
+        320,
+        135,
+        600,
+        415
+      ],
+      "source_interval_s": 80.33333333333333,
+      "models": {
+        "mask": "SAM 2.1 Hiera Small",
+        "hand_pose": "RTMPose-m Hand5 ONNX"
+      },
+      "provenance": "Actual model inference on recorded demonstration, offline reprocessing for explanatory film. SAM uses explicitly recorded manual box prompts. RTMPose predicts 21 joints; occluded joints are estimates. Not the live robot execution input.",
+      "hand_sam_score": 0.9765625,
+      "bottle_sam_score": 0.96484375,
+      "keypoint_display_threshold": 0.3
+    },
+    {
+      "frame_index": 1243,
+      "rgb": "perception/rgb/001243.png",
+      "mask_overlay": "perception/001243_mask_overlay.png",
+      "pose_overlay": "perception/001243_pose_overlay.png",
+      "triptych": "perception/001243_triptych.jpg",
+      "rgb_crop": "perception/001243_rgb_crop.png",
+      "mask_crop": "perception/001243_mask_crop.png",
+      "pose_crop": "perception/001243_pose_crop.png",
+      "crop_xyxy": [
+        320,
+        135,
+        600,
+        415
+      ],
+      "source_interval_s": 82.86666666666666,
+      "models": {
+        "mask": "SAM 2.1 Hiera Small",
+        "hand_pose": "RTMPose-m Hand5 ONNX"
+      },
+      "provenance": "Actual model inference on recorded demonstration, offline reprocessing for explanatory film. SAM uses explicitly recorded manual box prompts. RTMPose predicts 21 joints; occluded joints are estimates. Not the live robot execution input.",
+      "hand_sam_score": 0.9765625,
+      "bottle_sam_score": 0.96875,
+      "keypoint_display_threshold": 0.3
+    },
+    {
+      "frame_index": 1186,
+      "rgb": "perception/rgb/001186.png",
+      "mask_overlay": "perception/001186_mask_overlay.png",
+      "pose_overlay": "perception/001186_pose_overlay.png",
+      "triptych": "perception/001186_triptych.jpg",
+      "rgb_crop": "perception/001186_rgb_crop.png",
+      "mask_crop": "perception/001186_mask_crop.png",
+      "pose_crop": "perception/001186_pose_crop.png",
+      "crop_xyxy": [
+        320,
+        135,
+        600,
+        415
+      ],
+      "source_interval_s": 79.06666666666666,
+      "models": {
+        "mask": "SAM 2.1 Hiera Small",
+        "hand_pose": "RTMPose-m Hand5 ONNX"
+      },
+      "provenance": "Actual model inference on recorded demonstration, offline reprocessing for explanatory film. SAM uses explicitly recorded manual box prompts. RTMPose predicts 21 joints; occluded joints are estimates. Not the live robot execution input.",
+      "hand_sam_score": 0.96875,
+      "bottle_sam_score": 0.96875,
+      "keypoint_display_threshold": 0.3
+    },
+    {
+      "frame_index": 1138,
+      "rgb": "perception/rgb/001138.png",
+      "mask_overlay": "perception/001138_mask_overlay.png",
+      "pose_overlay": "perception/001138_pose_overlay.png",
+      "triptych": "perception/001138_triptych.jpg",
+      "rgb_crop": "perception/001138_rgb_crop.png",
+      "mask_crop": "perception/001138_mask_crop.png",
+      "pose_crop": "perception/001138_pose_crop.png",
+      "crop_xyxy": [
+        320,
+        135,
+        600,
+        415
+      ],
+      "source_interval_s": 75.86666666666666,
+      "models": {
+        "mask": "SAM 2.1 Hiera Small",
+        "hand_pose": "RTMPose-m Hand5 ONNX"
+      },
+      "provenance": "Actual model inference on recorded demonstration, offline reprocessing for explanatory film. SAM uses explicitly recorded manual box prompts. RTMPose predicts 21 joints; occluded joints are estimates. Not the live robot execution input.",
+      "hand_sam_score": 0.96484375,
+      "bottle_sam_score": 0.9765625,
+      "keypoint_display_threshold": 0.3
+    }
+  ],
+  "limitations": [
+    "The bottle was already upright; no bottle-righting demonstrated.",
+    "Hand covers the symmetric black cap: cap yaw rotation is not visually observable.",
+    "The source stage plan was review-only; labels indicate proposed authority, not proof of generalized automatic execution."
+  ],
+  "perception_provenance_files": [
+    "perception/prompts.json",
+    "perception/predictions.json",
+    "perception/infer_keyframes.py"
+  ],
+  "perception_video": {
+    "rgb_crop": "perception/rgb-crop-video.mp4",
+    "mask_overlay": "perception/mask-video.mp4",
+    "pose_overlay": "perception/pose-video.mp4",
+    "mask_crop": "perception/mask-crop-video.mp4",
+    "pose_crop": "perception/pose-crop-video.mp4",
+    "frame_start": 1146,
+    "frame_end_inclusive": 1248,
+    "fps": 15,
+    "duration_s": 6.866666666666666,
+    "status": "Actual SAM2.1 temporal video propagation plus per-frame RTMPose inference on the same recorded human demo; offline reprocessing for film. Initial manual hand and bottle box prompts recorded in infer_video.py.",
+    "optional_postprocessing": "SAM2 hole-filling extension unavailable; temporal segmentation inference succeeded without hole-fill postprocessing."
+  }
+}

@@ -4,6 +4,10 @@ test('project page renders with measured data and working controls',async({page}
  const missing=[];page.on('response',response=>{if(response.status()>=400&&response.url().startsWith('http://127.0.0.1:4173'))missing.push(response.url());});
  await page.goto('/');
  await expect(page.locator('h1')).toContainText('Learn the intent.');
+ await expect.poll(()=>page.locator('#framework-video').evaluate(v=>v.duration)).toBeCloseTo(174,0);
+ await page.locator('[data-film-time="84"]').click();
+ await expect.poll(()=>page.locator('#framework-video').evaluate(v=>v.currentTime)).toBeGreaterThanOrEqual(83.9);
+ await page.locator('#framework-video').evaluate(v=>v.pause());
  await expect(page.locator('#signal-chart circle')).toHaveCount(25);
  await page.locator('#node-touch').click();await expect(page.locator('#detail-title')).toContainText('contact evidence');
  await page.locator('#node-execute').click();await expect(page.locator('#detail-title')).toContainText('Plan goals');
@@ -25,7 +29,7 @@ test('keyboard tabs, reduced motion, and detailed documents work',async({page})=
  await expect.poll(()=>page.locator('#hero-video').evaluate(v=>v.paused)).toBe(true);
  await page.locator('#node-observe').focus();await page.keyboard.press('ArrowRight');await expect(page.locator('#node-compile')).toHaveAttribute('aria-selected','true');
  await page.locator('#tab-cup').focus();await page.keyboard.press('ArrowRight');await expect(page.locator('#tab-bottle')).toHaveAttribute('aria-selected','true');
- for(const [url,text] of [['/architecture.html','What a single demonstration provides'],['/video-script.html','Three-minute script']]){
+ for(const [url,text] of [['/architecture.html','What a single demonstration provides'],['/video-script.html','Final narration and picture']]){
   await page.goto(url);await expect(page.getByRole('heading',{name:text,exact:false})).toBeVisible();
   const sizes=await page.evaluate(()=>({scroll:document.documentElement.scrollWidth,width:innerWidth}));expect(sizes.scroll).toBeLessThanOrEqual(sizes.width+1);
  }

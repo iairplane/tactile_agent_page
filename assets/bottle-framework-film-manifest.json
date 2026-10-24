@@ -1,0 +1,238 @@
+{
+  "schema": "tactile-agent.framework-film.v1",
+  "created": "2026-10-24",
+  "language": "en",
+  "duration_s": 174,
+  "resolution": [
+    1920,
+    1080
+  ],
+  "fps": 30,
+  "file": "bottle-framework-film_EN.mp4",
+  "bytes": 17820562,
+  "sha256": "8ca8ffc9cbb8ef9254156fff342349f5696d85f0aed4c83ed8711541fb0b0f42",
+  "reference_style": "Original white-background academic motion graphics inspired by the owner-supplied RAPID presentation; no reference assets or audio reused.",
+  "audio": {
+    "type": "Synthetic English neural narration",
+    "voice": "en-US-AriaNeural",
+    "words": 343,
+    "captions": "Word-timed, burned into video and provided as separate SRT/VTT",
+    "music": false
+  },
+  "chapters": [
+    {
+      "start_s": 0,
+      "end_s": 8,
+      "id": "hook",
+      "title": "One demonstration"
+    },
+    {
+      "start_s": 8,
+      "end_s": 20,
+      "id": "demo",
+      "title": "Human task"
+    },
+    {
+      "start_s": 20,
+      "end_s": 42,
+      "id": "graph",
+      "title": "Video stage graph"
+    },
+    {
+      "start_s": 42,
+      "end_s": 58,
+      "id": "perception",
+      "title": "Hand perception"
+    },
+    {
+      "start_s": 58,
+      "end_s": 74,
+      "id": "relative",
+      "title": "Relative interaction"
+    },
+    {
+      "start_s": 74,
+      "end_s": 84,
+      "id": "planning",
+      "title": "Agent planning"
+    },
+    {
+      "start_s": 84,
+      "end_s": 106,
+      "id": "tree",
+      "title": "Tactile primitive tree"
+    },
+    {
+      "start_s": 106,
+      "end_s": 124,
+      "id": "code",
+      "title": "Task policy"
+    },
+    {
+      "start_s": 124,
+      "end_s": 146,
+      "id": "execution",
+      "title": "Robot execution"
+    },
+    {
+      "start_s": 146,
+      "end_s": 164,
+      "id": "release",
+      "title": "Release verification"
+    },
+    {
+      "start_s": 164,
+      "end_s": 174,
+      "id": "outro",
+      "title": "Framework summary"
+    }
+  ],
+  "human_source": {
+    "path": "runs/live/medicine_bottle_demo_20261023_01/analysis/demo_trim_1110_1274.mp4",
+    "sha256": "248062f1d5179198fbf773830caf925f8abf194c0be8d6b4fc63669b10534503",
+    "fps": 15,
+    "trim_first_frame": 1110
+  },
+  "robot_source": {
+    "path": "runs/live/medicine_bottle_robot_video_20261023_01/robot_execution_front_full.mp4",
+    "sha256": "f699bafabf65ff999fc8c81d00f7e921dd0d4460f7d997d8973bec96d26eaf2e",
+    "run": "Run16"
+  },
+  "video_nodes": [
+    {
+      "title": "Approach the cap",
+      "badge": "PLAN",
+      "source_frames": [
+        1119,
+        1142
+      ],
+      "trim_s": [
+        0.6,
+        2.1333333333333333
+      ]
+    },
+    {
+      "title": "Grasp & press",
+      "badge": "RELATIVE + TOUCH",
+      "source_frames": [
+        1142,
+        1152
+      ],
+      "trim_s": [
+        2.1333333333333333,
+        2.8
+      ]
+    },
+    {
+      "title": "Twist about the axis",
+      "badge": "RELATIVE + TOUCH",
+      "source_frames": [
+        1152,
+        1183
+      ],
+      "trim_s": [
+        2.8,
+        4.866666666666666
+      ]
+    },
+    {
+      "title": "Reset & regrasp",
+      "badge": "PLAN + RELATIVE",
+      "source_frames": [
+        1183,
+        1189
+      ],
+      "trim_s": [
+        4.866666666666666,
+        5.266666666666667
+      ]
+    },
+    {
+      "title": "Check for release",
+      "badge": "RELATIVE + TOUCH",
+      "source_frames": [
+        1240,
+        1248
+      ],
+      "trim_s": [
+        8.666666666666666,
+        9.2
+      ]
+    },
+    {
+      "title": "Lift along the axis",
+      "badge": "PLAN + RELATIVE",
+      "source_frames": [
+        1248,
+        1253
+      ],
+      "trim_s": [
+        9.2,
+        9.533333333333333
+      ]
+    },
+    {
+      "title": "Place the cap aside",
+      "badge": "PLAN \u00b7 HUMAN ONLY",
+      "source_frames": [
+        1253,
+        1265
+      ],
+      "trim_s": [
+        9.533333333333333,
+        10.333333333333334
+      ]
+    }
+  ],
+  "perception": {
+    "status": "Actual offline reprocessing on the same recorded demonstration, not historical live robot input",
+    "models": [
+      "SAM 2.1 Hiera Small",
+      "RTMPose-m Hand5 ONNX"
+    ],
+    "prompts": "Manual initial hand and bottle boxes; SAM2 temporal propagation",
+    "source_frames": [
+      1146,
+      1248
+    ],
+    "playback": 0.5,
+    "files": [
+      {
+        "file": "production/bottle_story/assets/perception/rgb-crop-video.mp4",
+        "sha256": "c64c2afb09e661b2c2e4037899409bd47e2e4904603cf5a6cb3519f903fb323a"
+      },
+      {
+        "file": "production/bottle_story/assets/perception/mask-crop-video.mp4",
+        "sha256": "978b6c097cdb1db5e8c770d4b6982049c24f96d9db0d9e4b143e7685abae7682"
+      },
+      {
+        "file": "production/bottle_story/assets/perception/pose-crop-video.mp4",
+        "sha256": "f2bc1d2c981638d3b35bac3e437569b7a27765dbe4edbbb95bffcb05a0cfdb21"
+      }
+    ]
+  },
+  "presentation": {
+    "graph": "Seven semantic groups from eleven observed intervals; active node excerpts loop at1x; Twist\u2194Reset loop and Twist\u2192Release check branch. Placement is human-only.",
+    "relative_geometry": "Conceptual retargeting diagram. Full cap yaw was not recovered from the symmetric black cap. Run16 used a reviewed robot-aligned cap frame.",
+    "primitive_tree": "Images, forces, torques shown as library channels. Bottle run uses raw Fz proxies; torque branch unselected.",
+    "policy": "Illustrative task-policy pseudocode, not a recording of an agent generating and deploying code.",
+    "robot": "Approach2.3x; twist/regrasp overview8.7x; final lift1x; captions in-frame."
+  },
+  "release_evidence": {
+    "source": "runs/live/medicine_bottle_execution_20261023_16_video_fast/action_log.json",
+    "units": "Session-relative raw SDK Fz proxy, not N or calibrated torque",
+    "peak": 1.1020157608973933,
+    "final_limit": 0.3857055163140876,
+    "candidate_windows": [
+      0.0773481817,
+      0.1152006566
+    ],
+    "stationary": 0.05672473664418365,
+    "contact": 0.3182583798223816,
+    "contact_minimum": 0.015675945806702035,
+    "rotation_deg": 540,
+    "resets": 5,
+    "lift_mm": 30
+  },
+  "evidence_boundary": "Bottle starts upright. Robot ends after verified cap lift; no robot placement in this take. No synchronized tactile RGB was recorded for Run16. Trace shows measured discrete windows, not invented continuous samples."
+}

@@ -29,12 +29,21 @@
     <div class="eyebrow"><span class="status-dot" aria-hidden="true"></span> A framework for contact-rich manipulation</div>
     <h1 id="hero-title">Learn the <em>intent.</em><br>Feel the <em>interaction.</em></h1>
     <p class="hero-subtitle"><strong>Tactile Agent</strong> connects one human demonstration to robot action through<br class="desktop-break"> object-relative geometry, agentic planning, and task-conditioned touch.</p>
-    <div class="hero-actions"><a class="button primary" href="#experiments"><span aria-hidden="true">▷</span> Watch the experiments</a><a class="button secondary" href="architecture.html">Explore the architecture <span aria-hidden="true">↗</span></a><a class="text-link" href="https://github.com/iairplane/tactile_agent_page" target="_blank" rel="noopener">Project repository <span aria-hidden="true">↗</span></a></div>
+    <div class="hero-actions"><a class="button primary" href="#framework-film"><span aria-hidden="true">▷</span> Watch the framework</a><a class="button secondary" href="architecture.html">Explore the architecture <span aria-hidden="true">↗</span></a><a class="text-link" href="https://github.com/iairplane/tactile_agent_page" target="_blank" rel="noopener">Project repository <span aria-hidden="true">↗</span></a></div>
     <figure class="hero-figure">
       <div class="hero-film"><video id="hero-video" muted loop playsinline preload="none" poster="assets/hero-poster.jpg" aria-label="Selected real robot cup and bottle execution clips, accelerated as labelled"><source data-src="assets/hero-loop.mp4" type="video/mp4"></video><button class="film-toggle" id="hero-toggle" type="button" aria-label="Play experiment preview">Play preview <span aria-hidden="true">▷</span></button></div>
       <figcaption><span><span class="live-dot" aria-hidden="true"></span> Real robot recordings</span><span>Franka FR3 · Hand-E · Dual tactile sensors</span><span>Selected clips · Speed marked in video</span></figcaption>
     </figure>
     <div class="hero-principles"><span><b>01</b> Demonstrate the task</span><span><b>02</b> Preserve the contact relation</span><span><b>03</b> Supervise the transition</span></div>
+  </section>
+
+  <section id="framework-film" class="section wrap framework-film-section" aria-labelledby="film-title">
+    <div class="section-label"><span>The framework film</span><span>2:54 · English narration · 1080p</span></div>
+    <div class="two-col"><h2 id="film-title">Watch the demonstration<br><em>become a task.</em></h2><p>A single bottle-opening example unfolds into a graph of video stages, hand–object perception, relative interaction, and a task-conditioned tactile policy. Follow the selected primitives into code, then see the recorded robot execution.</p></div>
+    <div class="framework-player"><video id="framework-video" controls playsinline preload="metadata" poster="assets/bottle-framework-film-poster.jpg" aria-label="Tactile Agent framework film with English narration and burned-in subtitles"><source src="assets/bottle-framework-film_EN.mp4" type="video/mp4"><track kind="captions" src="assets/bottle-framework-film_EN.vtt" srclang="en" label="English"></video></div>
+    <div class="film-chapters" role="group" aria-label="Framework film chapters"><button data-film-time="20">00:20 <span>Video stage graph</span></button><button data-film-time="42">00:42 <span>Hand perception</span></button><button data-film-time="58">00:58 <span>Relative transfer</span></button><button data-film-time="84">01:24 <span>Tactile primitive tree</span></button><button data-film-time="106">01:46 <span>Task policy code</span></button><button data-film-time="124">02:04 <span>Robot execution</span></button></div>
+    <div class="video-meta"><span>Original diagrams · Recorded demonstrations · Offline perception replay · Synthetic English narration</span><a href="assets/bottle-framework-film_EN.mp4" download>Download film ↓</a></div>
+    <p class="small-note">Perception overlays are genuine model outputs recomputed on the recorded demonstration. The policy animation illustrates the architecture; Run16 is a task-specific execution. <a href="assets/bottle-framework-film-manifest.json">Film provenance ↗</a></p>
   </section>
 
   <section id="idea" class="section wrap overview" aria-labelledby="idea-title">
