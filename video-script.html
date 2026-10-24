@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="A three-minute English introduction with narration, source footage, graphics, and explicit evidence labels. Includes a 60-second cut."><meta name="theme-color" content="#f9faf7"><title>Tell the story of Tactile Agent</title><link rel="icon" href="favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="styles.css"></head><body class="doc-page"><a class="skip-link" href="#main">Skip to content</a><header class="site-header"><div class="nav-wrap"><a class="brand" href="./">Tactile <strong>Agent</strong><span class="brand-dot">.</span></a><nav aria-label="Main navigation"><a href="./#architecture">Architecture</a><a href="./#experiments">Experiments</a><a href="./#resources">Resources ↗</a></nav></div></header><main class="doc-shell" id="main"><a class="doc-back" href="./">← Back to the project</a><h1 class="doc-title">Tell the story of Tactile Agent</h1><p class="doc-subtitle">A three-minute English introduction with narration, source footage, graphics, and explicit evidence labels. Includes a 60-second cut.</p><a class="button secondary" href="docs/video-script.md" download>Download Markdown ↓</a><article class="doc-content"><h1>Tactile Agent — English introduction video</h1>
+<p><strong>Format:</strong> 3:00, 16:9, English narration and authored on-screen text.<br>
+<strong>Title:</strong> Tactile Agent<br>
+<strong>Subtitle:</strong> One demonstration. Object-relative interaction. Task-specific tactile supervision.</p>
+<p>The script below is a production storyboard, not a claim that a new narrated movie has already been rendered. Use the existing English experiment videos as evidence inserts. Their captions remain readable; graphics added for this introduction should be placed in separate panels. Mark accelerated footage with its playback factor. Use “recorded shadow signal,” “online predicate,” and “concept diagram” labels where specified.</p>
+<h2>Visual grammar</h2>
+<p>Use generous white space, dark type, one explanation per shot, and smooth diagram reveals. Cyan represents agent/MoveIt planning; gold represents object-relative contact geometry; magenta represents tactile supervision; green marks a passed predicate. Red denotes a recovery request only when supported by the recorded run or explicitly labelled as conceptual. Keep the actual robot footage large. Animate a single active stage, then show the observation that allows its transition.</p>
+<h2>Three-minute script</h2>
+<h3>00:00–00:13 — The result and the problem</h3>
+<p><strong>Narration</strong></p>
+<p>“A robot can see a cup rim or a bottle cap. But seeing where to move does not tell it when contact is right, when to retry, or when a cap is ready to lift.”</p>
+<p><strong>Picture/action:</strong> Split-screen cup extraction and bottle cap lift. Freeze briefly before each successful lift.<br>
+<strong>State overlay:</strong> <code>CONTACT → ? → LIFT</code><br>
+<strong>Tactile overlay:</strong> “What evidence allows the next stage?”<br>
+<strong>Source:</strong> Cup English explainer 56.7–66.6 s; bottle English explainer 59–66 s.</p>
+<h3>00:13–00:29 — The central idea</h3>
+<p><strong>Narration</strong></p>
+<p>“Tactile Agent separates those questions. One human demonstration supplies task intent and key interaction relations. The robot plans its own motion, while task-specific tactile predicates supervise contact-dependent progress.”</p>
+<p><strong>Picture/action:</strong> Reveal three colored blocks: intent, relative interaction, tactile supervision. Connect to a robot executor.<br>
+<strong>State overlay:</strong> “Plan goals / Transfer contact geometry / Gate progress”<br>
+<strong>Tactile overlay:</strong> Magenta line connects the supervisor to transition arrows, not to joint commands.<br>
+<strong>Source:</strong> Newly drawn concept diagram.</p>
+<h3>00:29–00:46 — Compile the demonstration</h3>
+<p><strong>Narration</strong></p>
+<p>“RGB-D perception follows the hand and object. A compiler turns the demonstration into semantic stages: approach, engage, manipulate, and release. Hand trajectories help explain the action, but they are not replayed as robot waypoints.”</p>
+<p><strong>Picture/action:</strong> Human cup demo, masks and hand keypoints, then a short stage ribbon.<br>
+<strong>State overlay:</strong> <code>APPROACH → ENGAGE → MANIPULATE → RELEASE</code><br>
+<strong>Tactile overlay:</strong> None; do not imply the human contacted robot tactile pads.<br>
+<strong>Source:</strong> Cup English explainer 8–21.6 s; use exact perception footage from the source when possible.</p>
+<h3>00:46–01:03 — Preserve the interaction</h3>
+<p><strong>Narration</strong></p>
+<p>“At contact, the important relation is where and how the hand engages the object. We express that relation in an object or local task frame, ground it in the current scene, and adapt it to the robot’s actual gripper.”</p>
+<p><strong>Picture/action:</strong> Freeze the rim pinch; draw rim and TCP frames. Move the object-frame graphic while preserving its relation to the contact frame.<br>
+<strong>State overlay:</strong> <code>T_base_tcp = T_base_object · T_object_tcp</code><br>
+<strong>Tactile overlay:</strong> None.<br>
+<strong>Qualification caption:</strong> “Full pose transfer requires an observed object frame.”<br>
+<strong>Source:</strong> Cup English explainer 21.6–27.2 s plus original diagram.</p>
+<h3>01:03–01:19 — Divide control authority</h3>
+<p><strong>Narration</strong></p>
+<p>“The agent chooses stage goals. MoveIt computes robot trajectories. A deterministic executor advances when the required evidence arrives. This lets the system replan free-space motion while preserving the geometry that matters at interaction.”</p>
+<p><strong>Picture/action:</strong> Highlight cyan approach, gold contact, and magenta transition. Animate one transition arrow only after its predicate badge turns green.<br>
+<strong>State overlay:</strong> <code>OBSERVE → GROUND → PLAN → EXECUTE → VERIFY</code><br>
+<strong>Tactile overlay:</strong> “Predicates supervise progress.”<br>
+<strong>Source:</strong> Architecture diagram; bottle English explainer 27–36 s. Label generic loop “Architecture”; current hardware routes are task-specific.</p>
+<h3>01:19–01:37 — Select touch for the task</h3>
+<p><strong>Narration</strong></p>
+<p>“Touch is not one universal threshold. Tactile images describe contact location and shape. Force signals describe changes in loading and resistance. Fresh sensor windows become contact primitives, then task predicates with explicit validity and recovery rules.”</p>
+<p><strong>Picture/action:</strong> <code>Sensor channels → Contact primitives → Task predicates</code>. A cup contact patch branches to role matching; a bottle signal branches to press and release gates.<br>
+<strong>State overlay:</strong> “Continue / Complete / Unload and retry / Hold”<br>
+<strong>Tactile overlay:</strong> “Choose evidence for this interaction.”<br>
+<strong>Source:</strong> Cup tactile images and bottle logged trace. Use “Designed image predicate” for cup and “Online raw proxy” for bottle.</p>
+<h3>01:37–01:57 — Cup experiment</h3>
+<p><strong>Narration</strong></p>
+<p>“For nested cups, inner and outer fingers play different roles. The intended supervisor checks each contact pattern separately. This recorded take illustrates a scripted low probe, a six-millimetre correction, and a single-cup lift. Its tactile images were recorded for offline evaluation.”</p>
+<p><strong>Picture/action:</strong> Show probe, unloading, upward correction, and successful lift; place tactile streams beside the robot view.<br>
+<strong>State overlay:</strong> <code>PROBE → UNLOAD → RAISE 6 mm → REGRASP → LIFT</code><br>
+<strong>Tactile overlay:</strong> “Recorded tactile imagery · Shadow evaluation”<br>
+<strong>Persistent evidence caption:</strong> “Scripted retry · One-cup result confirmed from front RGB.”<br>
+<strong>Source:</strong> Cup English explainer 41.8–66.6 s. The robot recording ends at lift/hold.</p>
+<h3>01:57–02:20 — Bottle experiment</h3>
+<p><strong>Narration</strong></p>
+<p>“The safety cap uses online tactile feedback. After a contact baseline, a pressure-related change permits rotation. The robot presses and twists, then unloads, resets its wrist, and regrasps. In this run, six segments accumulate five hundred and forty degrees.”</p>
+<p><strong>Picture/action:</strong> Show approach/contact briefly, then six illuminated segment marks with five reset loops.<br>
+<strong>State overlay:</strong> <code>PRESS → TWIST → UNLOAD → RESET → REGRASP</code><br>
+<strong>Tactile overlay:</strong> “Online session-relative Fz proxy · Raw sensor units”<br>
+<strong>Source:</strong> Bottle English explainer 27–50 s. Prefer robot footage and reconstructed action-log trace; there is no synchronized tactile RGB for this run.</p>
+<h3>02:20–02:41 — Show the actual switching evidence</h3>
+<p><strong>Narration</strong></p>
+<p>“Lifting requires more than a turn count. Resistance must first build, then remain low in fresh windows while contact stays present. A stationary check confirms the release candidate. Only then does the state machine authorize the thirty-millimetre cap lift.”</p>
+<p><strong>Picture/action:</strong> Trace reveals peak, release limit, two fresh low windows, stationary verification, then the lift. Pause on the predicate before motion resumes.<br>
+<strong>State overlay:</strong> <code>RELEASE_CANDIDATE → STATIONARY_VERIFY → RELEASE_VERIFIED → LIFT_CAP</code><br>
+<strong>Tactile overlay:</strong> “Peak 1.102 / Limit 0.386 / Stationary 0.057”; “Contact retained”; y-axis “Relative raw sensor units.”<br>
+<strong>Source:</strong> Bottle English explainer 50–66 s; values reconstructed from Run16 action log. Do not label the trace as calibrated torque or newtons.</p>
+<h3>02:41–03:00 — Architecture and scope</h3>
+<p><strong>Narration</strong></p>
+<p>“These experiments show complementary parts of one architecture: intent from demonstration, interaction in object coordinates, motion from planning, and progress supervised by touch. Today’s executors remain task-specific. Every result retains its evidence, so demonstrated capability and the next research step stay clear.”</p>
+<p><strong>Picture/action:</strong> Return to the three-part architecture; end on cup and cap results with their evidence badges.<br>
+<strong>State overlay:</strong> “Demonstration → Task contract → Grounded motion → Evidence”<br>
+<strong>Tactile overlay:</strong> “Cup: shadow imagery / Cap: online predicates”<br>
+<strong>End card:</strong> “Tactile Agent — From a human demonstration to an inspectable robot skill.”<br>
+<strong>Source:</strong> Concept diagram, cup lift, cap lift. Do not add trial-count success rates or an unexecuted test-tube result.</p>
+<h2>Optional 60-second cut</h2>
+<table>
+<thead>
+<tr>
+<th>Time</th>
+<th>Narration</th>
+<th>Visual and evidence label</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>00:00–00:10</td>
+<td>“A human demonstration shows what to do. Tactile Agent turns it into stages, preserving the hand-object relation where contact matters.”</td>
+<td>Human cup demo → rim-frame diagram.</td>
+</tr>
+<tr>
+<td>00:10–00:21</td>
+<td>“The agent sets goals, MoveIt plans motion, and tactile predicates decide when contact stages can advance. The robot does not replay the human’s path.”</td>
+<td>Three responsibilities → stage arrow with predicate.</td>
+</tr>
+<tr>
+<td>00:21–00:33</td>
+<td>“For cups, contact shape matters. This take shows a scripted probe and correction; tactile images were recorded for offline evaluation.”</td>
+<td>Cup probe → +6 mm retry → lift. Persistent “Scripted retry / Shadow tactile.”</td>
+</tr>
+<tr>
+<td>00:33–00:47</td>
+<td>“For a safety cap, online relative sensor changes supervise pressing and twisting. Six segments produce five hundred and forty degrees, with five automatic regrasp cycles.”</td>
+<td>Bottle loop with 6 segment marks. “Online raw Fz proxy.”</td>
+</tr>
+<tr>
+<td>00:47–01:00</td>
+<td>“A sustained resistance drop with contact retained permits the final lift. Intent, relative geometry, and task-specific touch make the execution inspectable.”</td>
+<td>Release predicate → 30 mm lift → framework diagram.</td>
+</tr>
+</tbody>
+</table>
+<h2>Editing and narration notes</h2>
+<ul>
+<li>Keep the experiment evidence badges visible long enough to read; do not relegate them to a rapidly flashing disclaimer.</li>
+<li>The intended cup predicate is not the cause of the recorded Run08 retry. Show its diagram as the proposed supervision policy, then label the actual recorded motion separately.</li>
+<li>The cap starts upright. Do not use the cap footage to claim a demonstrated bottle-righting skill.</li>
+<li>The cap trace is reconstructed from the execution log. Do not substitute a tactile image from another session and label it as synchronized to Run16.</li>
+<li>The same contact frame graphic may explain transfer, but an animated scene relocation is conceptual unless backed by a corresponding real run.</li>
+<li>Label human footage “Human demonstration” and robot footage “Robot execution.” The recorded robot tasks end at lift/hold and cap lift, respectively.</li>
+<li>Read the full script at a measured pace with short pauses over the equation and predicate trace. Adjust transition holds to reach 3:00 after recording the voiceover; do not rush the evidence labels.</li>
+</ul>
+<h2>Source video cue sheet</h2>
+<p>The following are timestamps <strong>within the existing English explainers</strong>, not timestamps in the new 3:00 storyboard:</p>
+<table>
+<thead>
+<tr>
+<th>Source</th>
+<th>Cue</th>
+<th>Interval</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>cup_task_framework_explainer_EN.mp4</code></td>
+<td>Human demonstration</td>
+<td>8.0–15.4 s</td>
+</tr>
+<tr>
+<td>same</td>
+<td>Perception</td>
+<td>15.4–21.6 s</td>
+</tr>
+<tr>
+<td>same</td>
+<td>Relative relation</td>
+<td>21.6–27.2 s</td>
+</tr>
+<tr>
+<td>same</td>
+<td>Stage graph</td>
+<td>27.2–34.4 s</td>
+</tr>
+<tr>
+<td>same</td>
+<td>Intended tactile policy</td>
+<td>34.4–41.8 s</td>
+</tr>
+<tr>
+<td>same</td>
+<td>Scripted low probe</td>
+<td>41.8–49.7 s</td>
+</tr>
+<tr>
+<td>same</td>
+<td>Reacquire</td>
+<td>49.7–56.7 s</td>
+</tr>
+<tr>
+<td>same</td>
+<td>Single-cup lift</td>
+<td>56.7–66.6 s</td>
+</tr>
+<tr>
+<td><code>medicine_bottle_task_framework_explainer_EN.mp4</code></td>
+<td>Human demonstration</td>
+<td>4.0–12.5 s</td>
+</tr>
+<tr>
+<td>same</td>
+<td>Task compilation</td>
+<td>12.5–19.5 s</td>
+</tr>
+<tr>
+<td>same</td>
+<td>RGB-D grounding</td>
+<td>19.5–27.0 s</td>
+</tr>
+<tr>
+<td>same</td>
+<td>Approach and contact</td>
+<td>27.0–36.0 s</td>
+</tr>
+<tr>
+<td>same</td>
+<td>Twist/regrasp loop</td>
+<td>36.0–50.0 s</td>
+</tr>
+<tr>
+<td>same</td>
+<td>Release predicate</td>
+<td>50.0–59.0 s</td>
+</tr>
+<tr>
+<td>same</td>
+<td>Cap lift</td>
+<td>59.0–66.0 s</td>
+</tr>
+</tbody>
+</table>
+<p>Original source root: <code>tactile_agent/outputs/framework_videos_20261023/</code>. The source renderers, timeline JSONs, English subtitles, and encoding hashes are recorded in <code>manifest_EN.json</code>.</p>
+</article></main><footer class="site-footer wrap"><a class="brand" href="./">Tactile <strong>Agent</strong><span class="brand-dot">.</span></a><p>From a human demonstration to contact-aware action.</p><a href="https://github.com/iairplane/tactile_agent_page">Website source ↗</a></footer></body></html>
