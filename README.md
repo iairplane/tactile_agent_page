@@ -1,103 +1,25 @@
-# Tactile Agent · Project website
+# Tactile Agent project website
 
-An English research project page explaining demonstration-guided manipulation through stage intent, object-relative interaction, agentic motion planning, and task-conditioned tactile supervision.
+An original, buildless research project page using the supplied demonstration media, a unified Noto Sans type family, a centered white layout, and restrained orange accents.
 
-Repository: <https://github.com/iairplane/tactile_agent_page>\
-Intended GitHub Pages address: <https://iairplane.github.io/tactile_agent_page/> (available after Pages is enabled and deployment succeeds).
+## Structure
 
-## Included
+- `dist/index.html`: English content and semantic document structure.
+- `dist/style.css`: responsive layout, type, media, figures, and reduced-motion handling.
+- `dist/app.js`: video task graph, chapter controls, illustrative policy highlighting, synchronized bottle evidence and cup tactile streams.
+- `dist/assets/`: project videos, posters, font, subtitles, and measured windows.
+- `dist/assets/media-manifest.json`: original media provenance and edit timing.
 
-- An original responsive project page with an interactive architecture diagram.
-- A 2:54 English narrated framework film: seven video stages, genuine hand segmentation/keypoints, relative interaction, a tactile primitive tree, task-policy code, and recorded bottle execution.
-- Two English experiment explainers: top nested cup (72.6 s) and press-and-turn cap (66 s).
-- A silent 16.5 s real-robot preview, with playback speeds and experiment status labelled.
-- Interactive experiment stages that seek to the relevant video segment.
-- A plot of 25 real action-log sensor windows and an illustrative transition explorer.
-- A detailed English architecture article, a three-minute introduction storyboard, and a 60-second script.
-- Source provenance, evidence distinctions, editable Markdown, and media reproduction tooling.
+The complete `dist/` directory can be served by any static web server. It requires no framework, dependencies, API keys, external fonts, or backend. After extracting the complete package, open `index.html` directly in a current desktop browser. Media, fonts, subtitles, and the synchronized evidence plot are bundled and work offline; no server is needed. The same files can also be hosted on any static web server.
 
-The author block is deliberately omitted. The owner's provisional information is in `docs/editorial-notes.md`, pending confirmation.
+## Content and evidence
 
-## Framework film
+The bottle run uses relative raw SDK Fz proxies, six 90-degree segments, five automatic regrasp cycles, and a verified 30 mm lift. Recorded points are discrete windows. The source-video alignment is approximately action-log time + 3.4357 seconds.
 
-`assets/bottle-framework-film_EN.mp4` is the final 1920×1080, 30 fps film with English neural narration, burned-in word-timed captions, and embedded chapters. Separate SRT/VTT and a provenance manifest accompany it. The website offers chapter seeking.
+The cup retry is scripted; tactile video is recorded for offline shadow analysis. Perception overlays are actual offline reprocessing. The relation diagram and readable policy illustrate a modular architecture with current task-specific robot executors.
 
-The human demonstration is segmented into seven semantic video nodes. New SAM 2.1 / RTMPose outputs are genuine offline reprocessing on that recording. The film explicitly labels the architecture illustration and the recorded task-specific controller. The torque branch is visible but unselected for Run16.
+No author, affiliation, paper, success rate, or unverified generality is asserted.
 
-Editable narration and story are under `production/bottle_story/`; large editing intermediates stay local. To reproduce the render with the original sibling research recordings available:
+## Design reference
 
-```bash
-python scripts/render_bottle_story.py --preview
-python scripts/render_bottle_story.py
-# Regenerate narration with production/bottle_story/audio/synthesize.py if needed.
-python scripts/finalize_bottle_story.py
-```
-
-Requires Python with Pillow, NumPy and OpenCV; FFmpeg; and Lato/DejaVu fonts. Narration regeneration also requires `edge-tts` and network access. The final website has no synthesis or model dependencies.
-
-## Preview locally
-
-The deployed website is buildless HTML/CSS/JavaScript with self-hosted media and no external runtime dependencies.
-
-```bash
-npm ci
-npm run serve
-```
-
-Open the printed `http://127.0.0.1:4173` URL. The local server supports byte ranges so video chapter seeking behaves as it does on static hosting.
-
-## Edit and validate
-
-```bash
-npm run build:docs
-npm run check
-npm test
-```
-
-`npm test` uses Playwright with `/usr/bin/google-chrome`. Set `CHROME_PATH` if the browser is installed elsewhere. The tests cover desktop/mobile layout, experiment switching, actual video chapter seeking, interactive gates, keyboard tab navigation, reduced-motion behavior, and the detailed documents.
-
-Edit `docs/architecture.md` and `docs/video-script.md`, then run `npm run build:docs` to regenerate `architecture.html` and `video-script.html`.
-
-Reproduce media from a local checkout of the experimental repository:
-
-```bash
-python scripts/prepare_media.py --source ../tactile_agent
-```
-
-This optional step requires FFmpeg, Pillow, and the original recordings. The published repository already includes the resulting media and needs no access to the robot or source machine.
-
-## GitHub Pages
-
-The workflow in `.github/workflows/pages.yml` validates and publishes the static site from `main`. For a new repository, an administrator must enable **Settings → Pages → Build and deployment → Source: GitHub Actions** once:
-
-<https://github.com/iairplane/tactile_agent_page/settings/pages>
-
-After enabling, rerun the `Publish project page` workflow or push a new commit. Deployment does not require secrets in this repository. If Pages is already configured, pushes to `main` deploy automatically.
-
-## Evidence and scope
-
-- **Cup Run08:** reviewed hardcoded grasp location, scripted low-probe retry, +6 mm correction, ~67 mm lift; tactile imagery recorded in shadow mode. Front RGB/operator review confirm a single cup.
-- **Bottle Run16:** online gates use session-relative raw SDK Fz proxies, not calibrated force or torque. 540° total rotation, six segments, five automatic regrasp cycles, release verification, then a 30 mm cap lift. No synchronized tactile RGB in this take.
-- **Tube:** offline preparation only.
-- **General framework:** real executors are task-specific. An arbitrary-task generic hardware interpreter and broader tactile qualification remain under development.
-
-See `docs/claim-evidence.md` and `assets/media-manifest.json`. No aggregate success rate, publication venue, or unverified authorship is claimed.
-
-## Files
-
-```text
-index.html                       Main project page
-styles.css / app.js              Layout and interactions
-architecture.html                Generated technical walkthrough
-video-script.html                Generated introduction storyboard
-docs/                            Editable content and editorial records
-assets/                          Videos, captions, posters, measured signal data
-scripts/build-docs.mjs            Markdown to static HTML
-scripts/check-site.mjs            Local reference and content checks
-scripts/serve.mjs                 Local HTTP preview with range support
-scripts/prepare_media.py          Reproducible video/poster extraction
-tests/site.spec.js                Browser integration checks
-.github/workflows/pages.yml      Static Pages deployment
-```
-
-Visual clarity was inspired by the owner-supplied [RAPID project page](https://yuyaoliu.me/projects/rapid/). All page text, diagrams, layout code, and experiment media here are original to this project; no RAPID research results or media are reused.
+The presentation takes layout and pacing inspiration from https://yuyaoliu.me/projects/rapid/ . No reference research media, illustrations, source page code, audio, identity, or claims are included. Noto Sans is distributed under the included SIL Open Font License.

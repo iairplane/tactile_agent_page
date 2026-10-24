@@ -1,146 +1,195 @@
 {
-  "schema": "tactile-agent.web.media.v1",
+  "project": "Tactile Agent",
   "created": "2026-10-24",
-  "language": "en",
-  "provenance_root": "tactile_agent (source experiment repository)",
-  "sources": {
-    "cup_robot": "runs/live/cup_tactile_demo_20261023_08/rendered/cup_tactile_demo_run08_single_cup_visual_confirmed_final.mp4",
-    "bottle_robot": "runs/live/medicine_bottle_robot_video_20261023_01/robot_execution_front_full.mp4",
-    "bottle_action_log": "runs/live/medicine_bottle_execution_20261023_16_video_fast/action_log.json",
-    "explainers": "outputs/framework_videos_20261023"
-  },
-  "source_sha256": {
-    "cup_robot": "d7eeba78908aeb52b586ab28cae7851c7589bfaebf672e95f5d817a88c3f0553",
-    "bottle_robot": "f699bafabf65ff999fc8c81d00f7e921dd0d4460f7d997d8973bec96d26eaf2e",
-    "bottle_action_log": "c07ed50d5107d62f2de3cf180cc1883bb689858fa6f6885ef03d0306d1325432"
-  },
-  "hero": {
-    "file": "hero-loop.mp4",
-    "duration_s": 16.5,
-    "resolution": [
-      1280,
-      720
-    ],
-    "silent": true,
-    "fps": 30,
-    "presentation": "Two-panel evidence montage with in-frame playback speed labels and a brief edge fade. Different experimental runs are shown side by side, not synchronized.",
-    "cup_segments": [
-      {
-        "source_s": [
-          2.5,
-          35.5
-        ],
-        "speed": 2
-      }
-    ],
-    "bottle_segments": [
-      {
-        "source_s": [
-          26,
-          38
-        ],
-        "speed": 2
-      },
-      {
-        "source_s": [
-          39,
-          59
-        ],
-        "speed": 4
-      },
-      {
-        "source_s": [
-          212,
-          218
-        ],
-        "speed": 3
-      },
-      {
-        "source_s": [
-          220,
-          227
-        ],
-        "speed": 2
-      }
-    ],
-    "cup_crop": "Front RGB panel of the surviving composite; original raw capture was removed for space. Diagnostic overlays were excluded by cropping.",
-    "bottle_crop": "Clean front RGB footage; framing crop only."
-  },
-  "posters": {
-    "cup_source_s": 33.7,
-    "bottle_source_s": 226.2,
-    "hero_source_s": {
-      "cup": 33.7,
-      "bottle": 226.2
+  "sources_root": "tactile_agent_design_handoff_20261024",
+  "media": {
+    "human-demo.mp4": {
+      "source": "02_bottle_demo/human_bottle_demo.mp4",
+      "poster_time_s": 3.5,
+      "duration_s": 11.0,
+      "width": 640,
+      "height": 480,
+      "fps": "15/1"
     },
-    "source_resolution": {
-      "cup_front_rgb_panel": [
-        960,
-        720
-      ],
-      "bottle_front_rgb": [
+    "stage-approach.mp4": {
+      "source": "02_bottle_demo/segments/stage-approach.mp4",
+      "poster_time_s": 0.9,
+      "duration_s": 1.533333,
+      "width": 640,
+      "height": 480,
+      "fps": "15/1"
+    },
+    "stage-grasp.mp4": {
+      "source": "02_bottle_demo/segments/stage-grasp.mp4",
+      "poster_time_s": 0.3,
+      "duration_s": 0.666667,
+      "width": 640,
+      "height": 480,
+      "fps": "15/1"
+    },
+    "stage-twist.mp4": {
+      "source": "02_bottle_demo/segments/stage-twist.mp4",
+      "poster_time_s": 1,
+      "duration_s": 2.066667,
+      "width": 640,
+      "height": 480,
+      "fps": "15/1"
+    },
+    "stage-reset.mp4": {
+      "source": "02_bottle_demo/segments/stage-regrasp.mp4",
+      "poster_time_s": 0.2,
+      "duration_s": 0.4,
+      "width": 640,
+      "height": 480,
+      "fps": "15/1"
+    },
+    "stage-lift.mp4": {
+      "source": "02_bottle_demo/segments/stage-lift.mp4",
+      "poster_time_s": 0.2,
+      "duration_s": 0.333333,
+      "width": 640,
+      "height": 480,
+      "fps": "15/1"
+    },
+    "stage-place.mp4": {
+      "source": "02_bottle_demo/segments/stage-place.mp4",
+      "poster_time_s": 0.35,
+      "duration_s": 0.8,
+      "width": 640,
+      "height": 480,
+      "fps": "15/1"
+    },
+    "stage-release.mp4": {
+      "source": "02_bottle_demo/human_bottle_demo.mp4",
+      "source_start_s": 8.6666666667,
+      "source_end_s": 9.2,
+      "poster_time_s": 0.25,
+      "duration_s": 0.533333,
+      "width": 640,
+      "height": 480,
+      "fps": "15/1"
+    },
+    "perception-rgb.mp4": {
+      "source": "03_bottle_perception/rgb-crop-video.mp4",
+      "poster_time_s": 1.5,
+      "duration_s": 6.866667,
+      "width": 560,
+      "height": 560,
+      "fps": "15/1"
+    },
+    "perception-mask.mp4": {
+      "source": "03_bottle_perception/mask-crop-video.mp4",
+      "poster_time_s": 1.5,
+      "duration_s": 6.866667,
+      "width": 560,
+      "height": 560,
+      "fps": "15/1"
+    },
+    "perception-pose.mp4": {
+      "source": "03_bottle_perception/pose-crop-video.mp4",
+      "poster_time_s": 1.5,
+      "duration_s": 6.866667,
+      "width": 560,
+      "height": 560,
+      "fps": "15/1"
+    },
+    "robot-execution.mp4": {
+      "source": "04_bottle_robot/robot_execution_front_full.mp4",
+      "poster_time_s": 28,
+      "duration_s": 228.033333,
+      "width": 640,
+      "height": 480,
+      "fps": "30/1",
+      "notes": "Original full source, no acceleration. Approximate video_time = action_log_time + 3.4357 seconds."
+    },
+    "cup-front.mp4": {
+      "source": "07_cup_materials/robot_and_tactile/front_panel_crop.mp4",
+      "poster_time_s": 32,
+      "duration_s": 35.666667,
+      "width": 960,
+      "height": 720,
+      "fps": "15/1",
+      "notes": "Cropped source panel from surviving composite; diagnostic text may remain. Keep three cup streams synchronized. Left/right are display positions for sensor A/B; no anatomical handedness asserted."
+    },
+    "cup-left.mp4": {
+      "source": "07_cup_materials/robot_and_tactile/tactile_A_panel_annotated.mp4",
+      "poster_time_s": 32,
+      "duration_s": 35.666667,
+      "width": 400,
+      "height": 400,
+      "fps": "15/1",
+      "notes": "Cropped source panel from surviving composite; diagnostic text may remain. Keep three cup streams synchronized. Left/right are display positions for sensor A/B; no anatomical handedness asserted."
+    },
+    "cup-right.mp4": {
+      "source": "07_cup_materials/robot_and_tactile/tactile_B_panel_annotated.mp4",
+      "poster_time_s": 32,
+      "duration_s": 35.666667,
+      "width": 400,
+      "height": 400,
+      "fps": "15/1",
+      "notes": "Cropped source panel from surviving composite; diagnostic text may remain. Keep three cup streams synchronized. Left/right are display positions for sensor A/B; no anatomical handedness asserted."
+    },
+    "cup-human.mp4": {
+      "source": "07_cup_materials/human_demo/front_rgb_stage_preview.mp4",
+      "source_start_s": 8.5,
+      "source_end_s": 18.2,
+      "crop_xywh": [
+        0,
+        42,
         640,
-        480
-      ]
+        438
+      ],
+      "notes": "Existing black header removed; remaining source pixels unchanged. Human demonstration is separate from robot Run08.",
+      "duration_s": 9.666667,
+      "width": 640,
+      "height": 438,
+      "fps": "15/1"
     },
-    "note": "Posters are presentation canvases containing reframed real footage; canvas resolution does not imply higher sensor resolution."
-  },
-  "evidence_boundaries": {
-    "cup": "Run08 retry was scripted and tactile imagery recorded in shadow mode. One-cup outcome was confirmed by front RGB/operator review. Execution ends at LIFT/HOLD.",
-    "bottle": "Run16 uses online relative raw SDK Fz proxy gates, not calibrated force or task-frame torque. 540 degrees across six twist segments, five automatic wrist resets/regrasps; execution ends at 30 mm LIFT_CAP. No synchronized tactile RGB recording in Run16.",
-    "general": "No synthetic experiment imagery or invented signal samples. Edited excerpts are not real-time demonstrations; speed changes are disclosed."
-  },
-  "files": [
-    {
-      "file": "bottle-captions.vtt",
-      "bytes": 1198,
-      "sha256": "70ee2dfb9c358255e9ec7c7626c8567cc9e811f397262285c6bd413de7d02ff7"
-    },
-    {
-      "file": "bottle-explainer.mp4",
-      "bytes": 6422815,
-      "sha256": "498bc88c07a475bfaee2b8068aaf4075a796ed32aabd71ac68761fe602926fc0"
-    },
-    {
-      "file": "bottle-poster.jpg",
-      "bytes": 149850,
-      "sha256": "8cfdbe128265b680148b71a583ed2ff3faa9c226c70f72a3dc1564a6862402de"
-    },
-    {
-      "file": "bottle-signal.json",
-      "bytes": 14948,
-      "sha256": "9e3c64485e1cc05257a9f8544bb9e6ab2a137bc222345ff7f41b255be23fbb1e"
-    },
-    {
-      "file": "cup-captions.vtt",
-      "bytes": 992,
-      "sha256": "6a022c8cd91adce4d016768c366be483d156ce8a0a632381e4528fb74bed5169"
-    },
-    {
-      "file": "cup-explainer.mp4",
-      "bytes": 6164688,
-      "sha256": "d53f35d6bf215752c75f73e1269b2371d371468f8ea85bade39cd13976de7c1a"
-    },
-    {
-      "file": "cup-poster.jpg",
-      "bytes": 166322,
-      "sha256": "ce5a529612eecc55d4a29bea630ac63040dac950a563eaa74ef9d3d0298e6425"
-    },
-    {
-      "file": "hero-loop.mp4",
-      "bytes": 1513482,
-      "sha256": "d3d2293bbcec37b45ede1e389b9e5a65ff4abd7b1ba9368719d5559c027f861b"
-    },
-    {
-      "file": "hero-poster.jpg",
-      "bytes": 218682,
-      "sha256": "3c0e86a0047fc8a636daf97b49c83311cd1386fa6ed958e2f2c780637496272f"
-    },
-    {
-      "file": "og-image.jpg",
-      "bytes": 107055,
-      "sha256": "7252a28d56671b2354db98e39614cbd6056de7cb46533f27ff1966b7dc17c57a"
+    "robot-hero.mp4": {
+      "source": "04_bottle_robot/robot_execution_front_full.mp4",
+      "edits": [
+        {
+          "start": 6.7,
+          "end": 22.7,
+          "speed": 4,
+          "label": "Approach"
+        },
+        {
+          "start": 29.049,
+          "end": 37.094,
+          "speed": 2.01125,
+          "label": "Twist"
+        },
+        {
+          "start": 41.341,
+          "end": 61.28,
+          "speed": 4.98475,
+          "label": "Reset and regrasp"
+        },
+        {
+          "start": 212.406,
+          "end": 219.34,
+          "speed": 2.3113333333,
+          "label": "Final twist"
+        },
+        {
+          "start": 220.68,
+          "end": 227.4,
+          "speed": 1,
+          "label": "Verified lift"
+        }
+      ],
+      "notes": "Edited real source sequence at 1\u20135\u00d7. Last lift is 1\u00d7. Whole 4:3 image retained, no fabricated frames or overlays.",
+      "poster_source_time_s": 226,
+      "duration_s": 21.733333,
+      "width": 640,
+      "height": 480,
+      "fps": "30/1"
     }
-  ],
-  "total_bytes": 14760032
+  },
+  "evidence": {
+    "bottle": "Run16: online gates use session-relative raw SDK Fz proxies; 540 degrees, five automatic resets, verified 30 mm lift. Bottle begins upright. No synchronized tactile RGB.",
+    "cup": "Run08: scripted correction and shadow tactile recording; single cup visually confirmed.",
+    "perception": "Genuine offline reprocessing of the recorded human demonstration, not historical online robot inputs."
+  }
 }

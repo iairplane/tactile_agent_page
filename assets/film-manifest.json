@@ -1,0 +1,81 @@
+{
+  "title": "Tactile Agent \u2014 One demonstration, task-specific touch",
+  "language": "en",
+  "duration_seconds": 174.0,
+  "resolution": [
+    1920,
+    1080
+  ],
+  "fps": 24,
+  "frames": 4176,
+  "video_codec": "h264",
+  "audio_codec": "aac",
+  "audio_sample_rate": "48000",
+  "bytes": 12898065,
+  "sha256": "e20749f21defab67ffb2fc96c6b3e1c7f7af53521337dc8a8cee7e659fea3fc6",
+  "captions": "Burned-in English with independent SRT and VTT",
+  "narration": "Supplied synthetic en-US-AriaNeural narration; wording retained",
+  "visuals": "All scenes redesigned using recorded project footage and original diagrams",
+  "validation": [
+    "Full video and audio decoding passed with zero errors",
+    "ffprobe confirms resolution, duration, frame count, and audio stream",
+    "Encoded frames inspected at 4, 32, 65, 114, 137, and 161 seconds"
+  ],
+  "chapters": [
+    {
+      "start": 0,
+      "end": 8,
+      "name": "Opening"
+    },
+    {
+      "start": 8,
+      "end": 20,
+      "name": "Human demonstration"
+    },
+    {
+      "start": 20,
+      "end": 42,
+      "name": "Task graph"
+    },
+    {
+      "start": 42,
+      "end": 58,
+      "name": "Perception"
+    },
+    {
+      "start": 58,
+      "end": 74,
+      "name": "Relative interaction"
+    },
+    {
+      "start": 74,
+      "end": 84,
+      "name": "Motion planning"
+    },
+    {
+      "start": 84,
+      "end": 106,
+      "name": "Tactile library"
+    },
+    {
+      "start": 106,
+      "end": 124,
+      "name": "Illustrative policy"
+    },
+    {
+      "start": 124,
+      "end": 146,
+      "name": "Robot execution"
+    },
+    {
+      "start": 146,
+      "end": 164,
+      "name": "Release verification"
+    },
+    {
+      "start": 164,
+      "end": 174,
+      "name": "Closing"
+    }
+  ]
+}

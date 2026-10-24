@@ -1,174 +1,131 @@
-const $ = (selector) => document.querySelector(selector);
-const $$ = (selector) => [...document.querySelectorAll(selector)];
+'use strict';
 
-const components = {
-  observe: { kicker: '01 / Perception', title: 'Extract the interaction, preserve the evidence.', description: 'A fixed RGB-D camera records the human demonstration with aligned depth and timestamps. Segmentation and hand keypoints identify the target and interaction intervals. The recorded trajectory is evidence for understanding the task.', contract: 'Object tracks, hand keypoints, interaction intervals, and observation provenance.' },
-  compile: { kicker: '02 / Task compiler', title: 'Turn a demonstration into a stage program.', description: 'Each stage carries an intended effect, a target strategy, preconditions, completion predicates, and a bounded recovery policy. Contact-critical stages retain the demonstrated hand–object relation; movement stages request a new plan. Current real-robot runners are task-specific.', contract: 'A task skill: ordered stages + interaction constraints + transition conditions.' },
-  ground: { kicker: '03 / Relative geometry', title: 'Bind the relation to the live object.', description: 'Locate the object or task frame in the robot base, transfer the grasp relation, and adapt it to the installed gripper. Cup-rim contact and cap-axis interaction use task-specific geometry. Unobservable orientation and uncertain depth stay explicit.', contract: 'Robot-specific TCP candidates, grasp width, approach constraints, and live grounding evidence.' },
-  execute: { kicker: '04 / Planning & control', title: 'Plan goals. Execute bounded actions.', description: 'The agent chooses stage-level goals from the current scene. MoveIt plans robot motion from measured state. A deterministic task-specific executor runs the actions and evaluates declared transitions. A language model is not the joint-level servo controller.', contract: 'Planned motion, measured completion, gripper state, and per-stage action receipts.' },
-  touch: { kicker: '05 / Tactile supervision', title: 'Give each task the contact evidence it needs.', description: 'Sensor adapters preserve timestamps and baselines. Task profiles select contact geometry, load changes, or slip candidates. Temporal predicates tell the stage machine whether to continue, complete, recover, or hold. Each predicate is enabled only at its demonstrated qualification level.', contract: 'Task-specific, validity-aware predicates; the supervisor does not invent motion targets.' }
-};
-function selectComponent(key) {
-  const data = components[key];
-  $$('.flow-node, .supervisor-node').forEach((button) => {
-    const active = button.dataset.component === key;
-    button.classList.toggle('active', active);
-    if (button.getAttribute('role') === 'tab') { button.setAttribute('aria-selected', String(active)); button.tabIndex = active ? 0 : -1; }
-    else button.setAttribute('aria-pressed', String(active));
-  });
-  // Keep the main tab group reachable while the separate tactile control is selected.
-  if (key === 'touch') $('#node-observe').tabIndex = 0;
-  $('#detail-kicker').textContent = data.kicker;
-  $('#detail-title').textContent = data.title;
-  $('#detail-description').textContent = data.description;
-  $('#detail-contract').replaceChildren(Object.assign(document.createElement('span'), { textContent: 'Output' }), document.createTextNode(data.contract));
-  $('#architecture-detail').setAttribute('aria-labelledby', `node-${key}`);
-}
-$$('[data-component]').forEach((button) => button.addEventListener('click', () => selectComponent(button.dataset.component)));
-
-function enableArrowTabs(groupSelector, attribute, callback) {
-  const group = $(groupSelector);
-  group.addEventListener('keydown', (event) => {
-    const tabs = [...group.querySelectorAll('[role="tab"]')];
-    const index = tabs.indexOf(document.activeElement);
-    if (index === -1 || !['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
-    event.preventDefault();
-    const nextIndex = event.key === 'Home' ? 0 : event.key === 'End' ? tabs.length - 1 : (index + (event.key === 'ArrowRight' ? 1 : -1) + tabs.length) % tabs.length;
-    tabs[nextIndex].focus(); callback(tabs[nextIndex].dataset[attribute]);
-  });
-}
-enableArrowTabs('.flow-main', 'component', selectComponent);
-
-const taskData = {
-  cup: {
-    kicker: 'Task 01 / Nested cups', title: 'One rim.<br>One cup.', description: 'Transfer a side pinch onto the top rim of a stack of thin paper cups. The two fingertips contact different surfaces: one inside the rim, the other outside.', question: 'Is the contact pattern consistent with the intended rim grasp?', evidence: 'Recorded tactile images · Scripted correction', shadow: true, label: 'Cup experiment · 72.6 s · English captions', boundary: 'The robot probes at a lower height, unloads, retries 6 mm higher, and lifts about 67 mm. The retry is scripted; tactile images are recorded and assessed offline. Front RGB and operator review confirm one cup. The robot clip ends at lift/hold.',
-    stages: [
-      { name: 'Demonstrate', time: 8, role: 'Task intent', color: 'subdued', title: 'Read the human operation.', rule: 'Observe approach, rim pinch, separation and the subsequent intent.', description: 'The human demonstration includes later movement and release. These provide task structure; they are not all executed in the selected robot recording.' },
-      { name: 'Transfer', time: 21.6, role: 'Relative pose', color: 'geometry', title: 'Keep the rim-pinch relation.', rule: 'Ground the pinch relative to the current top rim.', description: 'The intended interaction uses an inner finger and an outer finger. Their contact patterns need not be symmetric. The recorded showcase uses a reviewed robot grasp location.' },
-      { name: 'Plan', time: 27.2, role: 'Agentic planning', color: 'agent', title: 'Choose stage goals for the robot.', rule: 'Approach and clearance are robot task policies.', description: 'The task program separates movement goals from the contact relation. MoveIt handles robot trajectories; the demonstration is not converted into a sequence of copied hand waypoints.' },
-      { name: 'Probe & retry', time: 41.8, role: 'Scripted correction', color: 'geometry', title: 'Unload before correcting the grasp.', rule: 'Low probe → unload → raise 6 mm → close again.', description: 'This retry was deliberately scripted to expose the contact change. The synchronized tactile images were logged in shadow mode and assessed offline; they did not trigger the retry.' },
-      { name: 'Lift & hold', time: 56.7, role: 'Observed result', color: 'agent', title: 'Lift the selected cup.', rule: 'The recorded robot sequence ends at lift / hold.', description: 'The robot lifts approximately 67 mm. Front RGB and operator review confirm one cup. This result is not evidence of an online tactile cup-count classifier.' }
-    ]
-  },
-  bottle: {
-    kicker: 'Task 02 / Press-and-turn cap', title: 'Press. Turn.<br>Know when to lift.', description: 'The bottle starts upright. The program engages the safety cap, turns around its task axis, and automatically resets and regrasps when wrist travel is exhausted.', question: 'Is contact retained, and has the resistance fallen enough to verify release?', evidence: 'Online tactile gates · Recorded relative force windows', shadow: false, label: 'Cap experiment · 66.0 s · English captions', boundary: 'Run16 executes 54 increments of 10°: 540° total, six 90° segments and five automatic wrist-reset / regrasp cycles. Fresh relative raw Fz windows support release verification before a 30 mm cap lift. The values are not calibrated force or torque; synchronized tactile RGB was not recorded in this run.',
-    stages: [
-      { name: 'Demonstrate', time: 4, role: 'Task intent', color: 'subdued', title: 'Identify the press-and-turn strategy.', rule: 'The bottle is already upright in this demonstration.', description: 'Human wrist resets reveal a repeated twist-and-regrasp strategy. The robot does not have to reproduce the exact number of human strokes.' },
-      { name: 'Ground & approach', time: 19.5, role: 'Relative pose + planning', color: 'geometry', title: 'Work in the live cap frame.', rule: 'Use the cap center and bottle axis with a reviewed grasp direction.', description: 'The round cap does not provide a unique visual yaw. The agent plans the approach; contact and axial motion use the cap task frame.' },
-      { name: 'Press verify', time: 27, role: 'Online tactile gate', color: 'tactile', title: 'Establish a fresh contact response.', rule: 'A baseline-relative response on either finger permits twisting.', description: 'The gate tolerates asymmetric contact. It uses raw SDK Fz changes relative to the current session baseline, rather than a claimed calibrated axial force.' },
-      { name: 'Twist & regrasp', time: 36, role: 'Bounded execution + touch', color: 'tactile', title: 'Keep turning while contact is retained.', rule: 'At 90°: open → unload → reset → regrasp → baseline → repress.', description: 'Both fingers losing contact stops rotation. Wrist limits define the segment length; tactile supervision checks the interaction as the program performs five automatic regrasp cycles.' },
-      { name: 'Verify & lift', time: 50, role: 'Online tactile gate', color: 'tactile', title: 'Verify release before lifting.', rule: 'Peak established + low fresh windows + retained contact + stationary verification.', description: 'After sufficient rotation, the resistance proxy falls while contact remains present. The stage machine records release_verified, then lifts the cap 30 mm.' }
-    ]
-  }
-};
-let currentTask = 'cup';
-let currentStage = -1;
-const taskVideo = $('#task-video');
-function selectStage(index, seek = true) {
-  currentStage = index;
-  const stage = taskData[currentTask].stages[index];
-  $$('#stage-selector button').forEach((button, i) => { button.classList.toggle('active', index === i); button.setAttribute('aria-pressed', String(index === i)); });
-  $('#stage-detail').innerHTML = `<div><span class="tag ${stage.color}">${stage.role}</span><h4>${stage.title}</h4></div><p><strong>${stage.rule}</strong>${stage.description}</p>`;
-  if (seek) {
-    const seekAndPlay = () => { taskVideo.currentTime = stage.time; taskVideo.play().catch(() => {}); };
-    if (taskVideo.readyState >= 1) seekAndPlay();
-    else { taskVideo.addEventListener('loadedmetadata', seekAndPlay, { once: true }); taskVideo.load(); }
-  }
-}
-function selectTask(key) {
-  const task = taskData[key];
-  taskVideo.pause(); currentTask = key; currentStage = -1;
-  $$('.task-tabs button').forEach((button) => { const selected = button.dataset.task === key; button.setAttribute('aria-selected', String(selected)); button.tabIndex = selected ? 0 : -1; });
-  $('#task-panel').setAttribute('aria-labelledby', `tab-${key}`);
-  $('#task-kicker').textContent = task.kicker;
-  $('#task-title').innerHTML = task.title;
-  $('#task-description').textContent = task.description;
-  $('#task-question').textContent = task.question;
-  $('#task-evidence').innerHTML = `<span class="evidence-dot${task.shadow ? ' shadow' : ''}"></span>${task.evidence}`;
-  $('#task-boundary p').textContent = task.boundary;
-  $('#task-video-label').textContent = task.label;
-  taskVideo.poster = `assets/${key}-poster.jpg`;
-  taskVideo.setAttribute('aria-label', `English ${key === 'cup' ? 'paper cup' : 'press-and-turn cap'} framework explainer`);
-  taskVideo.querySelector('source').src = `assets/${key}-explainer.mp4`;
-  $('#task-captions').src = `assets/${key}-captions.vtt`;
-  taskVideo.load();
-  $('#download-video').href = `assets/${key}-explainer.mp4`;
-  $('#stage-selector').replaceChildren(...task.stages.map((stage, i) => {
-    const button = document.createElement('button'); button.type = 'button'; button.innerHTML = `<b>0${i+1}</b>${stage.name}`; button.addEventListener('click', () => selectStage(i)); return button;
-  }));
-  selectStage(0, false);
-}
-$$('[data-task]').forEach((button) => button.addEventListener('click', () => selectTask(button.dataset.task)));
-enableArrowTabs('.task-tabs', 'task', selectTask);
-selectTask('cup');
-taskVideo.addEventListener('timeupdate', () => {
-  const stages = taskData[currentTask].stages;
-  const stageIndex = stages.reduce((last, stage, i) => taskVideo.currentTime >= stage.time ? i : last, 0);
-  if (stageIndex !== currentStage) selectStage(stageIndex, false);
+const stages = [
+  {id:'approach',n:1,title:'Approach',roles:['plan'],description:'The demonstration approaches the cap. The robot plans its own feasible approach.'},
+  {id:'grasp',n:2,title:'Grasp & press',roles:['relation','touch'],description:'Relative contact geometry establishes the grasp. A fresh contact check and press response gate the robot’s first turn.'},
+  {id:'twist',n:3,title:'Twist',roles:['relation','touch'],description:'Rotate about the bottle axis while maintaining contact. Continue through a bounded twist segment.'},
+  {id:'reset',n:4,title:'Reset & regrasp',roles:['plan','relation','touch'],note:'Return to twist',description:'Unload, reset the wrist, and regrasp. A new baseline and press check prepare the next twist. The robot chooses its own number of cycles.'},
+  {id:'release',n:5,title:'Verify release',roles:['relation','touch'],description:'The demonstrated release-check moment. In the recorded robot run, retained contact and fresh low resistance windows must pass stationary confirmation.'},
+  {id:'lift',n:6,title:'Lift cap',roles:['plan','relation','touch'],description:'Lift along the bottle axis only after release is verified. The recorded robot lifts the cap by 30 mm.'},
+  {id:'place',n:7,title:'Place aside',roles:['plan'],note:'Human demonstration only',description:'The human places the cap aside. The recorded robot sequence ends at cap lift; placement is not part of that recording.'}
+];
+const roleNames={plan:'Motion planning',relation:'Relative geometry',touch:'Tactile supervision'};
+const topRow=document.getElementById('stage-row-top');
+const bottomRow=document.getElementById('stage-row-bottom');
+stages.forEach(stage=>{
+  const button=document.createElement('button');
+  button.type='button';button.className='stage-node';button.dataset.stage=stage.id;
+  button.setAttribute('aria-label',`${stage.n}. ${stage.title}. ${stage.roles.map(r=>roleNames[r]).join(', ')}. Watch stage.`);
+  button.innerHTML=`<video class="ambient" muted loop playsinline preload="none" poster="assets/stage-${stage.id}.jpg" src="assets/stage-${stage.id}.mp4" aria-hidden="true"></video><h3><span>${stage.n}.</span>${stage.title}</h3><span class="stage-roles" aria-hidden="true">${stage.roles.map(r=>`<i class="${r}-dot"></i>`).join('')}</span><span class="node-note">${stage.note||'&nbsp;'}</span>`;
+  if(stage.n<=4) topRow.append(button); else bottomRow.prepend(button);
+  button.addEventListener('click',()=>openStage(stage));
 });
 
-const heroVideo = $('#hero-video');
-const heroToggle = $('#hero-toggle');
-let heroLoaded = false;
-let manualPause = false;
-async function playHero() {
-  if (!heroLoaded) { heroVideo.querySelector('source').src = heroVideo.querySelector('source').dataset.src; heroVideo.load(); heroLoaded = true; }
-  try { await heroVideo.play(); } catch { /* Poster and explicit play remain available. */ }
+const stageDialog=document.getElementById('stage-dialog');
+const stagePlayer=document.getElementById('stage-player');
+function openStage(stage){
+  document.getElementById('stage-dialog-title').textContent=`${stage.n}. ${stage.title}`;
+  document.getElementById('stage-dialog-description').textContent=stage.description;
+  stagePlayer.src=`assets/stage-${stage.id}.mp4`;
+  stagePlayer.poster=`assets/stage-${stage.id}.jpg`;
+  stageDialog.showModal();stagePlayer.play().catch(()=>{});
 }
-function heroButtonState() { const paused = heroVideo.paused; heroToggle.innerHTML = `${paused ? 'Play preview' : 'Pause preview'} <span aria-hidden="true">${paused ? '▷' : 'Ⅱ'}</span>`; heroToggle.setAttribute('aria-label', `${paused ? 'Play' : 'Pause'} experiment preview`); }
-heroVideo.addEventListener('play', heroButtonState); heroVideo.addEventListener('pause', heroButtonState);
-heroToggle.addEventListener('click', () => { if (heroVideo.paused) { manualPause = false; playHero(); } else { manualPause = true; heroVideo.pause(); } });
-const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)');
-if ('IntersectionObserver' in window) {
-  const observer = new IntersectionObserver(([entry]) => { if (entry.isIntersecting && !manualPause && !reduceMotion.matches && !navigator.connection?.saveData) playHero(); else heroVideo.pause(); }, { threshold: .15 }); observer.observe(heroVideo);
-}
-reduceMotion.addEventListener('change', (event) => { if (event.matches) { manualPause = true; heroVideo.pause(); } });
-document.addEventListener('visibilitychange', () => { if (document.hidden) { heroVideo.pause(); taskVideo.pause(); } });
+document.getElementById('close-stage').addEventListener('click',()=>stageDialog.close());
+stageDialog.addEventListener('close',()=>stagePlayer.pause());
+stageDialog.addEventListener('click',event=>{if(event.target===stageDialog){const r=stageDialog.getBoundingClientRect();if(event.clientX<r.left||event.clientX>r.right||event.clientY<r.top||event.clientY>r.bottom)stageDialog.close();}});
 
-const gates = {
-  press: ['PRESS_VERIFY', 'Begin a bounded twist', 'A fresh baseline-relative response on either finger permits rotation. Retained contact remains a condition during twisting.'],
-  lost: ['CONTACT_LOST', 'Stop rotation and hold', 'When both fingers lose contact presence, the task-specific program stops the twist. A tactile observation does not authorize an unplanned recovery motion.'],
-  limit: ['WRIST_LIMIT', 'Unload, reset, and regrasp', 'At the reviewed 90° wrist limit, the program opens, unloads along the axis, resets the wrist, regrasps, records a new baseline, and presses again.'],
-  release: ['RELEASE_CANDIDATE', 'Verify at rest, then lift', 'Sufficient rotation and an established peak are required. Fresh low-resistance windows with retained contact are followed by stationary verification before LIFT_CAP.']
-};
-$$('[data-gate]').forEach((button) => button.addEventListener('click', () => {
-  $$('[data-gate]').forEach((item) => { const selected = item === button; item.classList.toggle('active', selected); item.setAttribute('aria-pressed', String(selected)); });
-  const [state, action, description] = gates[button.dataset.gate];
-  $('#gate-result').innerHTML = `<span class="tag tactile">${state}</span><span aria-hidden="true">→</span><strong>${action}</strong><p>${description}</p>`;
-}));
+let motionPaused=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const ambientVideos=[...document.querySelectorAll('video.ambient')];
+const visibleVideos=new Set();
+const motionButton=document.getElementById('motion-toggle');
+function setMotionState(){motionButton.textContent=motionPaused?'Play motion':'Pause motion';motionButton.setAttribute('aria-pressed',String(motionPaused));for(const v of ambientVideos){if(!motionPaused&&visibleVideos.has(v)){v.muted=true;v.play().catch(()=>{});}else v.pause();}}
+const observer=new IntersectionObserver(entries=>{for(const entry of entries){if(entry.isIntersecting)visibleVideos.add(entry.target);else visibleVideos.delete(entry.target);}setMotionState();},{threshold:0.12});
+ambientVideos.forEach(v=>observer.observe(v));
+motionButton.addEventListener('click',()=>{motionPaused=!motionPaused;setMotionState();});
+setMotionState();
+document.addEventListener('visibilitychange',()=>{if(document.hidden)ambientVideos.forEach(v=>v.pause());else setMotionState();});
+const perceptionVideos=[...document.querySelectorAll('.perception-video')];
+perceptionVideos[0].addEventListener('timeupdate',()=>{for(const v of perceptionVideos.slice(1)){if(!v.paused&&Math.abs(v.currentTime-perceptionVideos[0].currentTime)>.14)v.currentTime=perceptionVideos[0].currentTime;}});
 
-const svgNS = 'http://www.w3.org/2000/svg';
-const frameworkVideo = $('#framework-video');
-$$('[data-film-time]').forEach((button) => button.addEventListener('click', async () => {
-  if (frameworkVideo.readyState < 1) await new Promise((resolve) => frameworkVideo.addEventListener('loadedmetadata', resolve, { once: true }));
-  frameworkVideo.currentTime = Number(button.dataset.filmTime);
-  heroVideo.pause(); taskVideo.pause();
-  try { await frameworkVideo.play(); } catch { /* Native controls remain available. */ }
-}));
-frameworkVideo.addEventListener('play', () => { heroVideo.pause(); taskVideo.pause(); });
-document.addEventListener('visibilitychange', () => { if (document.hidden) frameworkVideo.pause(); });
-function svgElement(name, attributes, text) { const element = document.createElementNS(svgNS, name); Object.entries(attributes).forEach(([key,value]) => element.setAttribute(key, value)); if (text !== undefined) element.textContent = text; return element; }
-function drawSignal(data) {
-  const chart = $('#signal-chart');
-  const samples = data.samples.filter((sample) => Number.isFinite(sample.time_s) && Number.isFinite(sample.value));
-  if (!samples.length) throw new Error('Missing measured signal samples');
-  const left=45, right=623, top=24, bottom=262;
-  const minTime=Math.min(...samples.map((s)=>s.time_s)), maxTime=Math.max(...samples.map((s)=>s.time_s));
-  const maxValue=Math.max(1.2,...samples.map((s)=>s.value))*1.07;
-  const x=(t)=>left+(t-minTime)/(maxTime-minTime||1)*(right-left);
-  const y=(v)=>bottom-v/maxValue*(bottom-top);
-  const label=(attrs,txt)=>svgElement('text',{fill:'#849086','font-family':'system-ui,sans-serif','font-size':10,...attrs},txt);
-  for(const v of [0,.4,.8,1.2]) { chart.append(svgElement('line',{x1:left,y1:y(v),x2:right,y2:y(v),stroke:'#e7ece5','stroke-width':1})); chart.append(label({x:left-10,y:y(v)+4,'text-anchor':'end'},v.toFixed(1))); }
-  const threshold=.386;
-  chart.append(svgElement('line',{x1:left,y1:y(threshold),x2:right,y2:y(threshold),stroke:'#b9904d','stroke-width':1.5,'stroke-dasharray':'5 5'}));
-  chart.append(label({x:right,y:y(threshold)-7,'text-anchor':'end',fill:'#a17b3a'},'final release threshold'));
-  // Discrete measured windows only: a line would imply observations between samples.
-  samples.forEach((s)=>{ const isRelease=s.release_phase === true; const point=svgElement('circle',{cx:x(s.time_s),cy:y(s.value),r:isRelease?4.5:3.5,fill:isRelease?'#247a7c':'#a36787','fill-opacity':.88,tabindex:0,role:'img','aria-label':`${s.phase}, time ${s.time_s.toFixed(1)} seconds, value ${s.value.toFixed(3)} relative raw units`}); point.append(svgElement('title',{},`${s.phase} · ${s.time_s.toFixed(1)} s · ${s.value.toFixed(3)} relative raw units`));chart.append(point);});
-  for(let i=0;i<5;i++){const t=minTime+(maxTime-minTime)*i/4;chart.append(label({x:x(t),y:bottom+21,'text-anchor':'middle'},`${Math.round(t)} s`));}
-  chart.append(label({x:(left+right)/2,y:bottom+43,'text-anchor':'middle'},'Time from action-log start'));
-  const peak=samples.reduce((a,b)=>a.value>b.value?a:b);chart.append(label({x:Math.min(right-55,x(peak.time_s)+9),y:Math.max(15,y(peak.value)-10),fill:'#8f5776'},`peak ${peak.value.toFixed(3)}`));
-  $('#signal-caption').textContent=`${samples.length} recorded windows · Dots are measurements; missing intervals are not synthesized. Green marks release checks.`;
+const film=document.getElementById('film');
+document.querySelectorAll('[data-film-time]').forEach(button=>button.addEventListener('click',()=>{film.currentTime=Number(button.dataset.filmTime);film.scrollIntoView({behavior:motionPaused?'instant':'smooth',block:'center'});film.play().catch(()=>{});}));
+document.querySelector('a[href="#overview-film"]').addEventListener('click',()=>film.play().catch(()=>{}));
+
+const explanations={1:'A fresh contact check and press response are required before each twist.',2:'Turn about the cap axis while checking that contact is retained.',3:'A prior resistance peak, fresh low windows, retained contact, and stationary confirmation permit the lift.',4:'Unload, reset the wrist, and regrasp. Establish a new baseline before the next turn.'};
+function selectPolicy(step){document.querySelectorAll('[data-policy-step]').forEach(b=>{const active=Number(b.dataset.policyStep)===step;b.classList.toggle('active',active);b.setAttribute('aria-pressed',String(active));});document.querySelectorAll('[data-code-step]').forEach(line=>line.classList.toggle('highlight',Number(line.dataset.codeStep)===step));document.getElementById('policy-explanation').textContent=explanations[step];}
+document.querySelectorAll('[data-policy-step]').forEach(button=>button.addEventListener('click',()=>selectPolicy(Number(button.dataset.policyStep))));
+selectPolicy(1);
+
+const tabs=[...document.querySelectorAll('[role="tab"]')];
+function selectTab(tab){tabs.forEach(t=>{const selected=t===tab;t.setAttribute('aria-selected',String(selected));t.tabIndex=selected?0:-1;const panel=document.getElementById(t.getAttribute('aria-controls'));panel.hidden=!selected;if(!selected)panel.querySelectorAll('video').forEach(v=>v.pause());});}
+tabs.forEach((tab,i)=>{tab.addEventListener('click',()=>selectTab(tab));tab.addEventListener('keydown',event=>{if(['ArrowRight','ArrowLeft','Home','End'].includes(event.key)){event.preventDefault();const next=event.key==='Home'?0:event.key==='End'?tabs.length-1:(i+(event.key==='ArrowRight'?1:-1)+tabs.length)%tabs.length;selectTab(tabs[next]);tabs[next].focus();}});});
+
+const robot=document.getElementById('robot-video');
+const offset=3.4357;
+let tactileData=null;
+const svgNS='http://www.w3.org/2000/svg';
+function svgElement(tag,attrs,text){const e=document.createElementNS(svgNS,tag);Object.entries(attrs).forEach(([k,v])=>e.setAttribute(k,String(v)));if(text!==undefined)e.textContent=text;return e;}
+const plot=document.getElementById('signal-plot');
+const px=t=>48+t/225*405,py=v=>250-v/1.25*210;
+function buildPlot(){
+  plot.replaceChildren();
+  for(const value of[0,.4,.8,1.2]){plot.append(svgElement('line',{x1:48,x2:453,y1:py(value),y2:py(value),stroke:'#e0e4e6','stroke-width':1}));plot.append(svgElement('text',{x:36,y:py(value)+4,'text-anchor':'end',fill:'#7d878e','font-size':12},value.toFixed(1)));}
+  for(const time of[0,60,120,180,225])plot.append(svgElement('text',{x:px(time),y:274,'text-anchor':'middle',fill:'#7d878e','font-size':12},String(time)));
+  plot.append(svgElement('text',{x:250,y:300,'text-anchor':'middle',fill:'#7d878e','font-size':12},'Action-log time (s)'));
+  const threshold=svgElement('g',{id:'release-threshold',opacity:'.35'});
+  threshold.append(svgElement('line',{x1:px(182.9),x2:px(225),y1:py(tactileData.release.threshold),y2:py(tactileData.release.threshold),stroke:'#d94b20','stroke-dasharray':'4 4','stroke-width':1.5}));
+  threshold.append(svgElement('text',{x:450,y:py(tactileData.release.threshold)-10,'text-anchor':'end',fill:'#b55536','font-size':11},'Release limit 0.386'));
+  plot.append(threshold);
+  tactileData.samples.forEach((s,i)=>{if(s.phase==='pre_press_baseline')plot.append(svgElement('line',{x1:px(s.time_s),x2:px(s.time_s),y1:45,y2:250,stroke:'#d8dddf','stroke-dasharray':'3 5','stroke-width':1}));const point=svgElement('circle',{cx:px(s.time_s),cy:py(s.value),r:4.6,fill:'#d5dadc',id:`window-${i}`});point.append(svgElement('title',{},`${s.time_s.toFixed(2)} s · ${s.phase.replaceAll('_',' ')} · ${s.value.toFixed(3)}`));plot.append(point);});
+  plot.append(svgElement('line',{id:'playback-cursor',x1:48,x2:48,y1:34,y2:251,stroke:'#d94b20','stroke-width':1.5,opacity:0}));
+  updateRobotEvidence();
 }
-fetch('assets/bottle-signal.json').then((response)=>{if(!response.ok)throw new Error('Signal file unavailable');return response.json();}).then(drawSignal).catch(()=>{
-  $('#signal-caption').textContent='Signal windows could not be loaded. Recorded release evidence: peak 1.102; threshold 0.386; final fresh windows 0.077, 0.115 and 0.057.';
-});
+const phaseNames={pre_press_baseline:'Fresh baseline',press_verify:'Press response',twist:'Twist response',unload_check:'Unload window'};
+function updateRobotEvidence(){
+  if(!tactileData)return;
+  const t=Math.max(0,robot.currentTime-offset);
+  let latest=-1;tactileData.samples.forEach((s,i)=>{const measured=s.time_s<=t;if(measured)latest=i;const point=document.getElementById(`window-${i}`);point.setAttribute('fill',measured?(s.release_phase?'#328166':'#d94b20'):'#d5dadc');point.setAttribute('r','4.6');});
+  const cursor=document.getElementById('playback-cursor');cursor.setAttribute('x1',String(px(Math.min(t,225))));cursor.setAttribute('x2',String(px(Math.min(t,225))));cursor.setAttribute('opacity',robot.currentTime>0?'1':'0');
+  document.getElementById('release-threshold').setAttribute('opacity',t>=182.89?'1':'.35');
+  let label='Approach and establish contact';let condition='Each regrasp establishes a fresh baseline.';
+  const events=tactileData.events.filter(e=>e.time_s<=t);const event=events.at(-1);
+  if(event){if(event.operation.startsWith('twist_batch'))label=event.state==='start'?'Twist about the cap axis':'Check contact after the twist';else if(event.operation.startsWith('wrist_reset'))label='Reset the wrist';else if(event.operation==='regrasp_close')label='Regrasp and re-establish contact';else if(event.operation==='release_verify')label='Release verified';else if(event.operation==='lift_released_cap')label=event.state==='passed'?'Cap lifted · 30 mm':'Lift the released cap';}
+  if(latest>=0){const s=tactileData.samples[latest];document.getElementById(`window-${latest}`).setAttribute('r','6.4');document.getElementById('signal-value').textContent=s.value.toFixed(3);document.getElementById('signal-phase').textContent=`${s.event_index===108?'Stationary confirmation':(phaseNames[s.phase]||s.phase)} · segment ${s.segment} · ${s.time_s.toFixed(1)} s`;if(s.phase==='press_verify')condition='A verified press response permits the next twist.';if(s.phase==='unload_check')condition='Unload before resetting and regrasping.';if(s.phase==='twist')condition=s.release_phase?'Check low resistance while retaining contact.':'Keep contact throughout the twist.';}else{document.getElementById('signal-value').textContent='—';document.getElementById('signal-phase').textContent='No measured window yet';}
+  if(t>=tactileData.release.time_s)condition='Fresh stationary verification passed. Lift permitted.';
+  document.getElementById('robot-stage').textContent=robot.currentTime>0?label:'Recorded bottle execution · Run16';document.getElementById('signal-condition').textContent=condition;
+}
+(window.TACTILE_MEASURED_WINDOWS ? Promise.resolve({ok:true,json:()=>Promise.resolve(window.TACTILE_MEASURED_WINDOWS)}) : fetch('assets/bottle-windows.json')).then(r=>{if(!r.ok)throw Error('Missing tactile data');return r.json();}).then(data=>{tactileData=data;buildPlot();}).catch(()=>{document.getElementById('signal-condition').textContent='The recorded windows can be downloaded below.';plot.append(svgElement('text',{x:240,y:145,'text-anchor':'middle',fill:'#667078','font-size':16},'Recorded data unavailable in this view'));});
+robot.addEventListener('timeupdate',updateRobotEvidence);robot.addEventListener('seeked',updateRobotEvidence);
+document.querySelectorAll('[data-robot-time]').forEach(button=>button.addEventListener('click',()=>{robot.currentTime=Number(button.dataset.robotTime);document.querySelectorAll('[data-robot-time]').forEach(b=>b.classList.toggle('active',b===button));robot.play().catch(()=>{});updateRobotEvidence();}));
+document.getElementById('robot-speed').addEventListener('change',event=>{robot.playbackRate=Number(event.target.value);});
+
+const cup=document.getElementById('cup-video');
+const cupSensors=[document.getElementById('cup-left'),document.getElementById('cup-right')];
+function syncCup(force=false){for(const sensor of cupSensors){if(force||Math.abs(sensor.currentTime-cup.currentTime)>.1)sensor.currentTime=cup.currentTime;sensor.playbackRate=cup.playbackRate;}}
+cup.addEventListener('play',()=>{syncCup(true);cupSensors.forEach(v=>v.play().catch(()=>{}));});
+cup.addEventListener('pause',()=>cupSensors.forEach(v=>v.pause()));
+cup.addEventListener('ended',()=>cupSensors.forEach(v=>v.pause()));
+cup.addEventListener('seeked',()=>syncCup(true));cup.addEventListener('timeupdate',()=>syncCup());cup.addEventListener('ratechange',()=>syncCup());
+
+// Size the task-graph connectors to the real media panels, including after font load.
+function drawGraphConnectors(){
+  const graph=document.getElementById('stage-graph');
+  const svg=graph.querySelector('.graph-connectors');
+  if(getComputedStyle(svg).display==='none')return;
+  const origin=graph.getBoundingClientRect();
+  svg.setAttribute('viewBox',`0 0 ${origin.width} ${origin.height}`);
+  svg.querySelectorAll('g,text').forEach(e=>e.remove());
+  const rect=id=>{const n=graph.querySelector(`[data-stage="${id}"]`);const v=n.querySelector('video').getBoundingClientRect();const b=n.getBoundingClientRect();return{left:v.left-origin.left,right:v.right-origin.left,top:v.top-origin.top,bottom:v.bottom-origin.top,cx:v.left-origin.left+v.width/2,cy:v.top-origin.top+v.height/2,fullBottom:b.bottom-origin.top};};
+  const nodes=Object.fromEntries(stages.map(s=>[s.id,rect(s.id)]));
+  const g=svgElement('g',{fill:'none',stroke:'#969b9f','stroke-width':1.5,'marker-end':'url(#graph-arrow)'});
+  for(const [a,b]of[['approach','grasp'],['grasp','twist'],['twist','reset']])g.append(svgElement('path',{d:`M${nodes[a].right+3} ${nodes[a].cy}H${nodes[b].left-6}`}));
+  g.append(svgElement('path',{d:`M${nodes.reset.cx} ${nodes.reset.top-2}V14H${nodes.twist.cx}V${nodes.twist.top-5}`}));
+  const mid=(nodes.twist.fullBottom+nodes.release.top)/2;
+  g.append(svgElement('path',{d:`M${nodes.twist.cx} ${nodes.twist.fullBottom+6}V${mid}H${nodes.release.cx}V${nodes.release.top-6}`}));
+  for(const [a,b]of[['release','lift'],['lift','place']])g.append(svgElement('path',{d:`M${nodes[a].left-3} ${nodes[a].cy}H${nodes[b].right+6}`}));
+  svg.append(g);
+  svg.append(svgElement('text',{x:(nodes.reset.cx+nodes.twist.cx)/2,y:7,'text-anchor':'middle',fill:'#667078','font-size':14},'Repeat as needed'));
+  svg.append(svgElement('text',{x:nodes.twist.cx-18,y:mid+5,'text-anchor':'end',fill:'#667078','font-size':14},'Check release'));
+}
+new ResizeObserver(drawGraphConnectors).observe(document.getElementById('stage-graph'));
+document.fonts.ready.then(drawGraphConnectors);
