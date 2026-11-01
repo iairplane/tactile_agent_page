@@ -1,0 +1,37 @@
+{
+  "version": 1,
+  "recorded_date": "2026-11-01",
+  "description": "User-confirmed successful real-robot execution videos.",
+  "videos": [
+    {
+      "id": "bowl-pick",
+      "label_zh": "成功拿碗",
+      "file": "successful-bowl-pick.mp4",
+      "duration_seconds": 12.766667
+    },
+    {
+      "id": "dropper-three-stage",
+      "label_zh": "成功胶头滴管三段拼接",
+      "file": "successful-dropper-three-stage.mp4",
+      "duration_seconds": 142.933333
+    },
+    {
+      "id": "usb-insert-remove",
+      "label_zh": "USB 插拔成功案例",
+      "file": "successful-usb-insert-remove.mp4",
+      "duration_seconds": 87.433333
+    },
+    {
+      "id": "test-tube-insertion",
+      "label_zh": "成功插试管",
+      "file": "successful-test-tube-insertion.mp4",
+      "duration_seconds": 230.066667
+    },
+    {
+      "id": "dropper-force-follow",
+      "label_zh": "成功滴管力跟随",
+      "file": "successful-dropper-force-follow.mp4",
+      "duration_seconds": 103.1
+    }
+  ]
+}
