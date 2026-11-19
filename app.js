@@ -2,6 +2,23 @@
 (function () {
   "use strict";
 
+  // ---------- hero teaser: play once, then glide down to the article ----------
+  const hero = document.getElementById("hero-video");
+  const bar = document.getElementById("hero-bar");
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (hero) {
+    if (reduceMotion) { hero.removeAttribute("autoplay"); hero.pause(); }
+    hero.addEventListener("timeupdate", () => { if (bar && hero.duration) bar.style.width = (100 * hero.currentTime / hero.duration) + "%"; });
+    hero.addEventListener("ended", () => {
+      if (bar) bar.style.width = "100%";
+      // only auto-scroll if the reader is still on the hero
+      if (!reduceMotion && window.scrollY < window.innerHeight * 0.3) {
+        setTimeout(() => document.getElementById("title").scrollIntoView({ behavior: "smooth", block: "start" }), 400);
+      }
+    });
+    hero.play().catch(() => {});
+  }
+
   // ---------- real-robot task player ----------
   const TASKS = [
     { id: "01_safety_cap", name: "T1 · Push-and-turn cap opening", rate: 80, desc: "Rotation Guard detects when the child-resistant cap engages; Release Guard verifies it is free before the lift." },
