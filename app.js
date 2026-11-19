@@ -11,12 +11,68 @@
     hero.addEventListener("timeupdate", () => { if (bar && hero.duration) bar.style.width = (100 * hero.currentTime / hero.duration) + "%"; });
     hero.addEventListener("ended", () => {
       if (bar) bar.style.width = "100%";
-      // only auto-scroll if the reader is still on the hero
-      if (!reduceMotion && window.scrollY < window.innerHeight * 0.3) {
-        setTimeout(() => document.getElementById("title").scrollIntoView({ behavior: "smooth", block: "start" }), 400);
-      }
+      // only dissolve + auto-scroll if the reader is still on the hero
+      if (reduceMotion || window.scrollY > window.innerHeight * 0.3) return;
+      dissolveHero(() => document.getElementById("title").scrollIntoView({ behavior: "smooth", block: "start" }));
     });
     hero.play().catch(() => {});
+  }
+
+  // Particle dissolve of the final logo frame: bright pixels become particles that drift away.
+  function dissolveHero(onHalfway) {
+    const box = hero.parentElement, W = box.clientWidth, H = box.clientHeight;
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const cv = document.createElement("canvas");
+    cv.className = "hero-fx"; cv.width = W * dpr; cv.height = H * dpr;
+    box.appendChild(cv);
+    const ctx = cv.getContext("2d"); ctx.scale(dpr, dpr);
+    // where the video is drawn inside the box (object-fit: contain)
+    const vr = hero.videoWidth / hero.videoHeight, br = W / H;
+    const vw = vr > br ? W : H * vr, vh = vr > br ? W / vr : H, vx = (W - vw) / 2, vy = (H - vh) / 2;
+    const off = document.createElement("canvas"); off.width = W; off.height = H;
+    const o = off.getContext("2d"); o.fillStyle = "#0a0b0d"; o.fillRect(0, 0, W, H);
+    try { o.drawImage(hero, vx, vy, vw, vh); } catch (e) { onHalfway(); cv.remove(); return; }
+    const data = o.getImageData(0, 0, W, H).data;
+    const step = W > 1200 ? 3 : 2, P = [];
+    let minX = W, maxX = 0;
+    for (let y = 0; y < H; y += step) for (let x = 0; x < W; x += step) {
+      const i = (y * W + x) * 4, r = data[i], g = data[i + 1], b = data[i + 2];
+      if (r + g + b < 150) continue;               // keep the logo, title and subtitle
+      const ang = Math.random() * Math.PI * 2, sp = 0.6 + Math.random() * 2.2;
+      P.push({ x, y, r, g, b, vx: Math.cos(ang) * sp + 1.2, vy: Math.sin(ang) * sp - 1.4, s: step * (0.9 + Math.random() * 0.6), d: 0 });
+      if (x < minX) minX = x; if (x > maxX) maxX = x;
+    }
+    // stagger: the dissolve sweeps from left to right
+    P.forEach((p) => { p.d = ((p.x - minX) / Math.max(1, maxX - minX)) * 700 + Math.random() * 220; });
+    ctx.drawImage(off, 0, 0, W, H);
+    hero.style.opacity = "0";
+    const t0 = performance.now(), LIFE = 1100, TOTAL = 700 + 220 + LIFE;
+    let fired = false;
+    (function frame(now) {
+      const t = now - t0;
+      ctx.fillStyle = "#0a0b0d"; ctx.fillRect(0, 0, W, H);
+      // the part the sweep has not reached yet stays the crisp original frame
+      const sweep = minX + ((t - 220) / 700) * (maxX - minX);
+      if (sweep < maxX + step) { ctx.save(); ctx.beginPath(); ctx.rect(Math.max(0, sweep), 0, W, H); ctx.clip(); ctx.drawImage(off, 0, 0, W, H); ctx.restore(); }
+      for (const p of P) {
+        const k = (t - p.d) / LIFE;
+        if (k >= 1 || (k <= 0 && p.x >= sweep)) continue;
+        let x = p.x, y = p.y, a = 1, s = p.s;
+        if (k > 0) {
+          const e = k * k;
+          x += p.vx * e * 90 + Math.sin((p.y + t * 0.6) * 0.02) * 12 * k;
+          y += p.vy * e * 90;
+          a = 1 - k; s = p.s * (1 - 0.6 * k);
+        }
+        ctx.globalAlpha = a;
+        ctx.fillStyle = k > 0 ? `rgb(${Math.min(255, p.r + 40 * k)},${Math.min(255, p.g + 60 * k)},${255})` : `rgb(${p.r},${p.g},${p.b})`;
+        ctx.fillRect(x, y, s, s);
+      }
+      ctx.globalAlpha = 1;
+      if (!fired && t > TOTAL * 0.45) { fired = true; onHalfway(); }
+      if (t < TOTAL) requestAnimationFrame(frame);
+      else setTimeout(() => { cv.remove(); hero.style.transition = "opacity .8s"; hero.style.opacity = "1"; }, 900);
+    })(t0);
   }
 
   // ---------- real-robot task player ----------
