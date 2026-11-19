@@ -1,190 +1,207 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#ffffff">
-  <title>Tactile Agent — One demonstration, task-specific touch</title>
-  <meta name="description" content="A modular framework connecting demonstrated intent, object-relative interaction, motion planning, and task-specific tactile supervision.">
-  <meta property="og:title" content="Tactile Agent — One demonstration, task-specific touch">
-  <meta property="og:description" content="From a human demonstration to a task graph, contact conditions, and verified robot progress.">
-  <meta property="og:image" content="https://tactile-agent-zhuoran.azure-stone-6394.chatgpt.site/assets/film-poster.jpg">
-  <meta property="og:type" content="website">
-  <link rel="icon" href="favicon.svg" type="image/svg+xml">
-  <link rel="preload" href="assets/NotoSans.ttf" as="font" type="font/ttf" crossorigin>
-  <link rel="stylesheet" href="style.css">
-  <script src="assets/bottle-data.js" defer></script>
-  <script src="app.js" defer></script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CaTS: Code as Tactile Supervisor</title>
+<meta name="description" content="CaTS grounds robot agents with demonstration priors and tactile supervision: one human RGB-D demonstration becomes a locally executable program with stage-specific tactile supervisors.">
+<link rel="icon" href="assets/cats/logo.svg" type="image/svg+xml">
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <a class="skip-link" href="#main">Skip to content</a>
-  <header class="site-header">
-    <nav aria-label="Main navigation">
-      <a href="#overview">Overview</a><a href="#method">Method</a><a href="#demonstrations">Demonstrations</a><a href="#resources">Resources</a>
-    </nav>
-  </header>
-  <main id="main">
-    <section class="hero" id="overview" aria-labelledby="project-title">
-      <div class="container">
-        <h1 id="project-title"><span>Tactile Agent</span><br>One demonstration, <span class="keep-together">task-specific touch</span></h1>
-        <p class="hero-summary">Demonstrated intent. Object-relative interaction.<br>Robot motion supervised by touch.</p>
-        <div class="actions">
-          <a class="button" href="#overview-film"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="m7 4 9 6-9 6Z" fill="currentColor"/></svg>Watch the video</a>
-          <a class="button" href="#method"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 4h14v12H3zM7 4v12M3 8h14" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>Explore the method</a>
-          <a class="button secondary" href="assets/tactile-agent-film.mp4" download><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 2v10m-4-4 4 4 4-4M3 13v4h14v-4" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>Download video</a>
+
+<header class="hero" aria-label="Real-robot highlights">
+  <video src="assets/cats/hero.mp4" autoplay muted loop playsinline preload="auto" aria-hidden="true"></video>
+  <a class="hint" href="#title">Scroll to explore ↓</a>
+</header>
+
+<div class="layout">
+  <nav class="toc" aria-label="Table of contents">
+    <a href="#title">Title</a>
+    <a href="#video">Video</a>
+    <a href="#abstract">Abstract</a>
+    <a href="#contributions">Contributions</a>
+    <a href="#method">Method</a>
+    <a class="sub" href="#plan">Demo-to-robot plan</a>
+    <a class="sub" href="#hierarchy">Tactile hierarchy</a>
+    <a class="sub" href="#program">Local program</a>
+    <a href="#demos">Real-robot tasks</a>
+    <a href="#results">Results</a>
+    <a class="sub" href="#real">Real robot</a>
+    <a class="sub" href="#sim">Simulation</a>
+    <a class="sub" href="#ablations">Ablations</a>
+    <a href="#conclusion">Conclusion</a>
+    <a href="#citation">Citation</a>
+  </nav>
+
+  <main>
+    <section id="title">
+      <div class="title-row">
+        <img src="assets/cats/logo.svg" alt="CaTS logo">
+        <h1><span class="short">CaTS</span>: Code as Tactile Supervisor</h1>
+      </div>
+      <p class="subtitle">Grounding Robot Agents with Demonstration Priors and Tactile Supervision</p>
+      <p class="authors">Anonymous authors</p>
+      <p class="venue">CVPR 2027 submission · under review</p>
+      <div class="buttons">
+        <span class="btn" aria-disabled="true" title="Released after the review period">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6"/></svg>Paper <span class="soon">soon</span></span>
+        <a class="btn" href="#video"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M10 9l5 3-5 3z" fill="currentColor"/></svg>Video</a>
+        <span class="btn" aria-disabled="true" title="Released after the review period">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 6l-6 6 6 6M16 6l6 6-6 6"/></svg>Code <span class="soon">soon</span></span>
+      </div>
+      <hr>
+    </section>
+
+    <section id="video" class="reveal">
+      <figure class="video-wrap">
+        <video src="assets/cats/cats-video.mp4" poster="assets/cats/cats-video-poster.jpg" controls preload="metadata" playsinline></video>
+        <figcaption><b>Overview video.</b> From one human demonstration to a locally executed program with tactile supervision, followed by six real-robot tasks and the simulation results.</figcaption>
+      </figure>
+    </section>
+
+    <section id="abstract" class="reveal">
+      <h2>Abstract</h2>
+      <p class="lead">Agentic robot systems can synthesize executable Code-as-Policy programs and revise them from feedback. Their success in simulation depends on accurate state information and inexpensive retries. However, these agents fail in real-world contact-rich manipulation because these advantages are difficult to guarantee. Critical physical states are difficult to observe, and physical trial and error is costly. To address these challenges, we present Code as Tactile Supervisor (CaTS), an agentic framework that grounds robot agents with demonstration priors and tactile supervision. At planning time, CaTS analyzes a single human RGB-D demonstration to recover manipulation stages, motion intent, and key contact relations. Using physics-grounded tactile patterns as priors, the agent synthesizes stage-specific supervisors conditioned on this demonstration-derived task context. CaTS then compiles the robot stage plan and synthesized supervisors into a locally executable program. At execution time, raw tactile observations are encoded into contact patterns, which are evaluated by the synthesized supervisors to monitor contact conditions, drive bounded adjustments, and trigger stage transitions. The program runs locally without further foundation-model calls. Across six real-robot and twenty simulated tasks, CaTS outperforms all evaluated baselines in average success rate. Further evaluations demonstrate cross-sensor transfer and efficient local execution.</p>
+      <div class="stats">
+        <div class="stat"><b>1</b><span>human RGB-D demo per task</span></div>
+        <div class="stat"><b>66.7%</b><span>real-robot success · 6 tasks</span></div>
+        <div class="stat"><b>61.8%</b><span>simulation success · 20 tasks</span></div>
+        <div class="stat"><b>0</b><span>model calls at run time</span></div>
+      </div>
+    </section>
+
+    <section id="contributions" class="reveal">
+      <h2>Contributions</h2>
+      <ul class="contrib">
+        <li><b>CaTS</b>, an agentic framework that grounds robot agents by combining <b>demonstration priors</b> with <b>tactile supervision</b>: one human demonstration supplies the task context that turns tactile signals into stage-specific checks.</li>
+        <li><b>Hierarchical tactile supervision</b> — raw observations, physics-grounded patterns, and stage supervisors — that lets one supervision program run unchanged across heterogeneous tactile sensors.</li>
+        <li>The best overall performance across <b>six real-robot</b> and <b>twenty simulated</b> tasks, while substantially reducing cumulative tactile feedback latency through local execution.</li>
+      </ul>
+    </section>
+
+    <section id="method" class="reveal">
+      <h2>Method</h2>
+      <p>The demonstration says <i>what</i> to do. Touch says <i>whether it worked</i>. Code runs both locally. CaTS turns a single human RGB-D demonstration into a robot stage plan, has an agent synthesize a tactile supervisor for every stage, and compiles everything into one program that closes the feedback loop on the robot without calling a foundation model.</p>
+      <figure class="card">
+        <img src="assets/cats/fig1-overview.jpg" width="2000" height="873" alt="Overview: one RGB-D demonstration, the CaTS agent, an executable program and tactile-guided execution" loading="lazy">
+        <figcaption><b>From one demonstration to a local program with tactile supervision.</b> In child-resistant cap opening, mechanism priors expand the demonstrated twist into Press &amp; Twist and Lift &amp; Twist; Rotation Guard detects cap engagement and Release Guard verifies release, letting live tactile feedback govern these stages and the transition to the final lift.</figcaption>
+      </figure>
+      <figure class="card">
+        <img src="assets/cats/fig2-pipeline.jpg" width="1800" height="1042" alt="CaTS pipeline with three parts: demo-to-robot plan adaptation, hierarchical tactile supervision, program synthesis and execution" loading="lazy">
+        <figcaption><b>CaTS pipeline.</b> (A) Demo-to-robot plan adaptation. (B) The three-layer tactile hierarchy links agent-driven supervisor synthesis at planning time with local tactile evaluation at execution time. (C) The stage plan and supervisors compile into a local program that governs bounded responses and stage transitions.</figcaption>
+      </figure>
+
+      <h3 id="plan">A · Demo-to-robot plan adaptation</h3>
+      <p>CaTS processes the demonstration's object and hand streams in parallel: the object branch segments targets (SAM3) and estimates 6-DoF poses (F2G-Pose); the hand branch propagates hand masks (SAM 2.1), estimates 2D keypoints (RTMPose) and lifts them to 3D joints with local depth. Changes in hand–object relative motion and contact divide the demonstration into ordered stages, each with a subgoal, a motion intent and the contacts to establish, maintain or release.</p>
+      <p>For stages where the grasp is established, CaTS extracts the human contact location, closing axis and approach direction, and keeps only the GraspGen-X robot grasps consistent with them. The agent then adapts the plan to the object (pose), the scene (trajectory) and the robot (task structure) — for example splitting a demonstrated <i>Twist</i> into <i>Press &amp; Twist</i> and <i>Lift &amp; Twist</i> to satisfy child-resistant cap mechanics.</p>
+
+      <h3 id="hierarchy">B · Hierarchical tactile supervision</h3>
+      <p>Tactile supervision is organized in three layers. <b>L1</b> holds raw tactile images and marker coordinates. <b>L2</b> holds physics-grounded patterns with a fixed physical meaning — the agent reads their definitions while planning, and a unified encoder fills in their values at run time. <b>L3</b> holds the stage-specific supervisors the agent composes from L2 patterns.</p>
+      <table>
+        <thead><tr><th>Category</th><th>Pattern</th><th>Runtime value</th></tr></thead>
+        <tbody>
+          <tr><td>Contact load</td><td>Normal · Shear · Torque</td><td>scalar · 2-vector · 3-vector</td></tr>
+          <tr><td>Contact geometry</td><td>Area · Center · Axis · Elongation</td><td>per-frame contact shape</td></tr>
+          <tr><td>Marker motion</td><td>Global flow · Residual shear</td><td>mean marker displacement · per-marker residuals</td></tr>
+        </tbody>
+      </table>
+      <p class="muted">Representative pattern types (paper Table 1). For Press &amp; Twist, the agent selects net tangential force and global marker flow, aligns them to the world frame, and composes them into a single cap-engagement cue — the <b>Rotation Guard</b>.</p>
+
+      <h3 id="program">C · Program synthesis and local closed-loop execution</h3>
+      <p>For every stage the agent builds a finite set of bounded responses, synthesizes the supervisor, connects the stages with transition logic and compiles the program. At each control step the encoder turns raw touch into pattern values, the active supervisor selects a bounded response, and the program advances when its transition condition holds.</p>
+<pre class="code"><span class="fn">grasp</span>(cap)
+<span class="fn">press_twist</span>(<span class="sv">rotation_guard</span>)
+    <span class="kw">until</span> cap_engaged
+<span class="fn">lift_twist</span>(<span class="sv">release_guard</span>)
+    <span class="kw">until</span> rotation_complete
+<span class="kw">if</span> probe_lift_ok(): <span class="fn">lift</span>(cap)
+<span class="kw">else</span>: <span class="fn">retry_lift_twist</span>(max_retries)</pre>
+      <div class="callout">All feedback processing runs locally. In simulation, compiling the supervision once recovers its generation cost after roughly 17–25 tactile feedback decisions compared with querying the agent for every observation (CaTS-Online).</div>
+    </section>
+
+    <section id="demos" class="reveal">
+      <h2>Real-robot tasks</h2>
+      <p>Six contact-rich tasks on a Franka Research 3 arm with GF220 visuotactile fingertips, each learned from a single human demonstration. Pick a task to watch an execution; speed-ups are labelled in each clip.</p>
+      <div class="tabs" role="tablist" aria-label="Real-robot tasks"></div>
+      <div class="task-player">
+        <video id="task-video" controls muted playsinline preload="metadata"></video>
+        <p class="task-note"><span class="rate" id="task-rate"></span><b id="task-name"></b> — <span id="task-desc"></span></p>
+      </div>
+      <figure class="card">
+        <img src="assets/cats/fig3-tasks.jpg" width="1020" height="469" alt="Six real-robot tasks and their human demonstrations" loading="lazy">
+        <figcaption><b>Six real-robot tasks and their human demonstrations.</b></figcaption>
+      </figure>
+    </section>
+
+    <section id="results" class="reveal">
+      <h2>Results</h2>
+      <h3 id="real">Real robot</h3>
+      <p>CaTS achieves a 66.7% mean success rate over six real-robot tasks (10 trials each), compared with 21.7% for Agent0 + D and 18.3% for Agent0. Both baselines receive full raw tactile observations and share the same foundation-model backbone; Agent0 + D also receives the same demonstration.</p>
+      <div class="bars" data-bars='[["CaTS (Ours)",66.7,1],["Agent0 + D",21.7],["Agent0",18.3]]'></div>
+      <div class="two-col">
+        <div>
+          <div class="chart-title">CaTS success per task (%)</div>
+          <div class="bars" data-bars='[["T1 Cap",80,1],["T2 Cup",50,1],["T3 Bowl",60,1],["T4 USB",70,1],["T5 Pipette",80,1],["T6 Tube",60,1]]'></div>
+          <p class="muted">Both baselines score 0% on cap opening, top-cup extraction and tube reorientation-and-insertion.</p>
         </div>
-        <figure class="main-film" id="overview-film">
-          <video id="film" controls playsinline preload="none" poster="assets/film-poster.jpg" aria-label="Tactile Agent narrated overview">
-            <source src="assets/tactile-agent-film.mp4" type="video/mp4">
-            <track src="assets/tactile-agent-film.vtt" kind="captions" srclang="en" label="English">
-            Your browser does not support embedded video. <a href="assets/tactile-agent-film.mp4">Download the film</a>.
-          </video>
-          <figcaption>A demonstration gives the task its structure. Touch checks when the robot can move on.</figcaption>
+        <figure class="card" style="margin-top:20px">
+          <img src="assets/cats/fig4b-executions.jpg" width="1007" height="654" alt="Representative CaTS execution sequences for the six tasks" loading="lazy">
+          <figcaption><b>Representative CaTS executions.</b></figcaption>
         </figure>
-        <div class="chapter-nav" aria-label="Video chapters">
-          <button data-film-time="20">Task graph <span>0:20</span></button>
-          <button data-film-time="42">Perception <span>0:42</span></button>
-          <button data-film-time="84">Tactile primitives <span>1:24</span></button>
-          <button data-film-time="124">Robot execution <span>2:04</span></button>
-        </div>
       </div>
+
+      <h3 id="sim">Simulation</h3>
+      <p>Across twenty simulated tasks — eight single-arm tasks from UniVTAC and twelve NeoSim tasks (four single-arm, eight bimanual) — CaTS reaches 61.8% mean success, compared with 43.1% for Agent0 + D and 30.6% for Agent0. CaTS is most effective when contact changes must trigger different responses across stages (Insert Hole, Insert Tube, Pull-out Key), and demonstrations guide coordinated action modes across two arms (Cup Handover, Stack Plates, Unstack Cup).</p>
+      <div class="legend"><span><i style="background:#2aa59a"></i>UniVTAC</span><span><i style="background:var(--purple)"></i>NeoSim</span><span><i style="background:var(--accent-soft)"></i>highlighted in the paper</span></div>
+      <div class="sim-grid" id="sim-grid"></div>
+      <div class="two-col">
+        <div><div class="chart-title">UniVTAC · mean of 8 tasks (%)</div><div class="bars" data-bars='[["CaTS (Ours)",63.3,1],["UniV.",48.0],["Agent0 + D",46.7],["Agent0",41.0],["VITaL",40.5],["ACT",30.9]]'></div></div>
+        <div><div class="chart-title">NeoSim · mean of 12 tasks (%)</div><div class="bars" data-bars='[["CaTS (Ours)",60.7,1],["π0.5",45.8],["Agent0 + D",40.6],["LingBot",32.1],["Agent0",23.7],["Xiaomi-R0",23.4]]'></div></div>
+      </div>
+      <p class="muted">Agent0, Agent0 + D and CaTS use 90 trials per simulated task with one fixed program per task. Published baseline results share the official tasks and metric but serve as reference points, not same-protocol controls.</p>
+
+      <h3 id="ablations">Ablations</h3>
+      <p><b>Demonstration priors.</b> Removing demonstration priors from tactile supervision — while keeping the same robot stage plan and tactile patterns — halves stage success (55 episodes, six representative simulated tasks).</p>
+      <table>
+        <thead><tr><th>Method</th><th class="num">Next action accuracy</th><th class="num">Stage success</th></tr></thead>
+        <tbody>
+          <tr class="ours"><td>CaTS</td><td class="num">76.9%</td><td class="num">80.0%</td></tr>
+          <tr><td>CaTS w/o demo prior</td><td class="num">65.1%</td><td class="num">40.0%</td></tr>
+        </tbody>
+      </table>
+      <p><b>Cross-sensor transfer.</b> One supervision program, configured once on GS Mini, transfers unchanged to GF225 and Xense WS by replacing only the sensor adapter (Lift Can, UniVTAC, 90 trials per test). Slip-onset indentation differs by less than 0.05 mm across sensors, and overload recovery stays at 100%.</p>
+      <table>
+        <thead><tr><th>Sensor</th><th class="num">Slip onset, standard (mm)</th><th class="num">Slip onset, induced (mm)</th><th class="num">Unload change (mm)</th><th class="num">Overload recovery</th></tr></thead>
+        <tbody>
+          <tr><td>GS Mini</td><td class="num">5.715</td><td class="num">5.774</td><td class="num">−0.384</td><td class="num">100%</td></tr>
+          <tr><td>GF225</td><td class="num">5.763</td><td class="num">5.752</td><td class="num">−0.970</td><td class="num">100%</td></tr>
+          <tr><td>Xense WS</td><td class="num">5.722</td><td class="num">5.747</td><td class="num">−0.329</td><td class="num">100%</td></tr>
+        </tbody>
+      </table>
+      <p><b>Local feedback latency.</b> Across five simulated tasks, CaTS recovers its initial program-generation cost after about 17–25 feedback decisions relative to CaTS-Online, which invokes the agent for every new tactile observation; the advantage grows as feedback demand increases.</p>
     </section>
 
-    <section class="section wash" id="method" aria-labelledby="method-title">
-      <div class="container">
-        <div class="section-intro">
-          <h2 id="method-title">From intent to interaction</h2>
-          <p>A single demonstration reveals what to do and how the hand engages the object. Tactile Agent connects that structure to motion planning, relative geometry, and explicit contact conditions.</p>
-        </div>
-        <div class="principles">
-          <article>
-            <svg class="principle-icon plan" viewBox="0 0 96 64" aria-hidden="true"><path d="M14 49C32 49 26 15 49 15s20 34 35 34" fill="none" stroke="currentColor" stroke-width="3" stroke-dasharray="5 5"/><circle cx="14" cy="49" r="6" fill="white" stroke="currentColor" stroke-width="3"/><path d="m77 42 8 7-8 7" fill="none" stroke="currentColor" stroke-width="3"/></svg>
-            <h3>Plan the motion</h3><p>Set the goal.<br>Find a feasible robot trajectory.</p>
-          </article>
-          <article>
-            <svg class="principle-icon relation" viewBox="0 0 96 64" aria-hidden="true"><rect x="35" y="19" width="26" height="36" rx="5" fill="none" stroke="currentColor" stroke-width="3"/><path d="M27 7v29h8M69 7v29h-8M40 20V12h16v8" fill="none" stroke="currentColor" stroke-width="3"/><circle cx="35" cy="36" r="4" fill="currentColor"/><circle cx="61" cy="36" r="4" fill="currentColor"/></svg>
-            <h3>Transfer the interaction</h3><p>Preserve the important<br>hand–object relationship.</p>
-          </article>
-          <article>
-            <svg class="principle-icon touch" viewBox="0 0 96 64" aria-hidden="true"><path d="M8 38h17l8-19 13 34 12-28 8 13h22" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><circle cx="74" cy="15" r="9" fill="white" stroke="currentColor" stroke-width="2"/><path d="m70 15 3 3 5-6" fill="none" stroke="currentColor" stroke-width="2"/></svg>
-            <h3>Check through touch</h3><p>Monitor contact.<br>Decide when to advance.</p>
-          </article>
-        </div>
-        <p class="small-note centered">A modular systems approach, with task-specific robot executors.</p>
-      </div>
+    <section id="conclusion" class="reveal">
+      <h2>Conclusion</h2>
+      <p>CaTS grounds robot agents with demonstration priors and tactile supervision. Across six real-robot and twenty simulated tasks it achieves the best overall performance among the evaluated methods. Ablations show that demonstration priors improve tactile supervision, the hierarchical design transfers one supervision program across heterogeneous tactile sensors, and local execution substantially reduces cumulative feedback latency.</p>
     </section>
 
-    <section class="section" id="task-graph" aria-labelledby="graph-title">
-      <div class="container">
-        <div class="section-intro">
-          <h2 id="graph-title">A demonstration becomes a task graph</h2>
-          <p>Real video segments preserve the structure of the task. A twist–regrasp loop lets the robot work within its own range of motion.</p>
-        </div>
-        <div class="graph-legend" aria-label="Stage responsibilities"><span><i class="plan-dot"></i>Motion planning</span><span><i class="relation-dot"></i>Relative geometry</span><span><i class="touch-dot"></i>Tactile supervision</span></div>
-        <div class="stage-graph" id="stage-graph">
-          <svg class="graph-connectors" viewBox="0 0 1120 650" preserveAspectRatio="none" aria-hidden="true"><defs><marker id="graph-arrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0 0 6 3 0 6" fill="none" stroke="#969b9f" stroke-width="1.6"/></marker></defs><g fill="none" stroke="#969b9f" stroke-width="1.6" marker-end="url(#graph-arrow)"><path d="M246 140H288"/><path d="M534 140H576"/><path d="M822 140H864"/><path d="M986 40V15H698V40"/><path d="M698 289V342H830V385"/><path d="M711 480H669"/><path d="M423 480H381"/></g><text x="842" y="8" text-anchor="middle" fill="#667078" font-size="15">Repeat as needed</text><text x="574" y="347" text-anchor="middle" fill="#667078" font-size="15">Check release</text></svg>
-          <div class="stage-row" id="stage-row-top"></div>
-          <div class="stage-row reverse-row" id="stage-row-bottom"></div>
-        </div>
-        <div class="graph-footer"><p>Click any stage to watch it closely. The final placement belongs to the human demonstration.</p><button class="text-button" id="motion-toggle" aria-pressed="false">Pause motion</button></div>
-      </div>
-    </section>
-
-    <section class="section wash" id="perception" aria-labelledby="perception-title">
-      <div class="container">
-        <div class="section-intro">
-          <h2 id="perception-title">See the interaction, then transfer it</h2>
-          <p>Object masks locate the bottle. Hand keypoints describe the grasp. Together, they make the important contact relation visible.</p>
-        </div>
-        <div class="perception-panels">
-          <figure><video class="ambient perception-video" muted loop playsinline preload="none" poster="assets/perception-rgb.jpg" src="assets/perception-rgb.mp4" aria-label="Recorded demonstration RGB"></video><figcaption>Recorded demonstration</figcaption></figure>
-          <figure><video class="ambient perception-video" muted loop playsinline preload="none" poster="assets/perception-mask.jpg" src="assets/perception-mask.mp4" aria-label="Hand and bottle segmentation"></video><figcaption>Hand &amp; object masks</figcaption></figure>
-          <figure><video class="ambient perception-video" muted loop playsinline preload="none" poster="assets/perception-pose.jpg" src="assets/perception-pose.mp4" aria-label="Hand keypoints"></video><figcaption>Hand keypoints</figcaption></figure>
-        </div>
-        <p class="small-note centered">Actual offline perception of the same recorded demonstration.</p>
-        <div class="relation-flow" aria-label="Illustrative interaction transfer">
-          <div><span class="relation-picture"><svg viewBox="0 0 150 100" aria-hidden="true"><rect x="57" y="43" width="36" height="49" rx="7"/><path d="M62 43V32h26v11M47 59V27q0-10 8-10h40q9 0 9 10v30M47 33l-8-7q-7-4-10 4l13 41 13 6"/><path class="axis" d="M75 17v65m0-65-5 8m5-8 5 8"/><circle cx="57" cy="47" r="4"/><circle cx="93" cy="47" r="4"/></svg></span><h3>Human–object relation</h3><p>Contact position and direction</p></div>
-          <span class="flow-arrow" aria-hidden="true">→</span>
-          <div><span class="relation-picture"><svg viewBox="0 0 150 100" aria-hidden="true"><path d="M35 25h80M50 25v20l15 11m35-31v20L85 56M65 56v18m20-18v18"/><rect x="60" y="64" width="30" height="28" rx="5"/><path class="axis" d="M75 9v70m0-70-5 8m5-8 5 8"/><circle cx="64" cy="68" r="4"/><circle cx="86" cy="68" r="4"/></svg></span><h3>Gripper adaptation</h3><p>Map the relation to robot geometry</p></div>
-          <span class="flow-arrow" aria-hidden="true">→</span>
-          <div><span class="relation-picture"><svg viewBox="0 0 150 100" aria-hidden="true"><path d="M15 90h120M24 90V66l30-27 28 12 7-20M82 51l15 8M89 31l17 3v17M97 59h14v17"/><rect x="100" y="71" width="21" height="19" rx="4"/><path class="axis" d="M111 60V20m0 0-5 8m5-8 5 8"/><circle cx="54" cy="39" r="5"/></svg></span><h3>Robot–object target</h3><p>Ground the goal in the current scene</p></div>
-        </div>
-        <p class="small-note centered">Illustrative transfer. The recorded cap task uses the bottle axis and a reviewed grasp direction.</p>
-      </div>
-    </section>
-
-    <section class="section" id="touch" aria-labelledby="touch-title">
-      <div class="container">
-        <div class="section-intro">
-          <h2 id="touch-title">Choose the evidence the task needs</h2>
-          <p>The tactile library organizes contact primitives by sensing modality. For this bottle, the selected force-response conditions supervise pressing, turning, and release.</p>
-        </div>
-        <div class="tactile-tree" aria-label="Tactile primitive tree">
-          <div class="tree-root">Tactile primitive library</div>
-          <div class="tree-branches">
-            <article class="tree-branch"><h3>Images</h3><ul><li>Contact shape &amp; location</li><li>Contact motion &amp; slip</li></ul><p>Available library branch</p></article>
-            <article class="tree-branch selected"><h3>Force response <svg viewBox="0 0 24 24" aria-label="Selected"><circle cx="12" cy="12" r="10" fill="currentColor"/><path d="m7 12 3.5 3.5L17 9" stroke="white" stroke-width="2" fill="none"/></svg></h3><ul><li>Contact present</li><li>Press response</li><li>Contact retained</li><li>Release verified</li></ul><p>Selected for the bottle run</p></article>
-            <article class="tree-branch"><h3>Torques / moments</h3><ul><li>Rotational resistance</li><li>Engagement &amp; twist</li></ul><p>Available library branch</p></article>
-          </div>
-          <div class="tree-selection"><span aria-hidden="true">↓</span><div>Agent composes task conditions</div><span aria-hidden="true">↓</span></div>
-        </div>
-        <div class="policy-wrap">
-          <div class="policy-caption"><h3>A readable contact policy</h3><span>Illustrative policy</span></div>
-          <pre class="policy-code" aria-label="Illustrative Python policy"><code><span class="code-line" data-code-step="0"><b>for</b> cycle <b>in</b> bounded_regrasp_cycles:</span>
-<span class="code-line" data-code-step="1">    require(contact_present(fresh_window()))</span>
-<span class="code-line" data-code-step="1">    require(press_until_response(new_baseline()))</span>
-<span class="code-line" data-code-step="2">    twist_segment(cap_axis)</span>
-<span class="code-line" data-code-step="2">    require(contact_retained(fresh_window()))</span>
-<span class="code-line" data-code-step="3">    <b>if</b> release_candidate() <b>and</b> stationary_confirm():</span>
-<span class="code-line" data-code-step="3">        lift_along_axis(30 * mm)</span>
-<span class="code-line" data-code-step="3">        <b>break</b></span>
-<span class="code-line" data-code-step="4">    unload_reset_regrasp()</span></code></pre>
-          <div class="policy-steps" aria-label="Explore policy conditions"><button class="active" data-policy-step="1" aria-pressed="true">1. Establish contact</button><button data-policy-step="2" aria-pressed="false">2. Turn &amp; monitor</button><button data-policy-step="3" aria-pressed="false">3. Verify &amp; lift</button><button data-policy-step="4" aria-pressed="false">4. Reset if needed</button></div>
-          <p class="policy-explanation" id="policy-explanation">A fresh contact check and press response are required before each twist.</p>
-        </div>
-        <p class="small-note centered">The bottle controller uses session-relative raw Fz proxies. Torque and tactile images were not online inputs in this run.</p>
-      </div>
-    </section>
-
-    <section class="section wash" id="demonstrations" aria-labelledby="demo-title">
-      <div class="container">
-        <div class="section-intro">
-          <h2 id="demo-title">From conditions to real contact</h2>
-          <p>Watch the recorded tasks, then inspect the evidence behind each stage.</p>
-        </div>
-        <div class="demo-tabs" role="tablist" aria-label="Recorded demonstrations"><button id="bottle-tab" role="tab" aria-selected="true" aria-controls="bottle-panel" tabindex="0">Open a safety cap</button><button id="cup-tab" role="tab" aria-selected="false" aria-controls="cup-panel" tabindex="-1">Extract the top cup</button></div>
-        <div id="bottle-panel" role="tabpanel" aria-labelledby="bottle-tab">
-          <div class="demo-heading"><h3>Touch decides when to continue</h3><p>Six twist segments, five automatic regrasps, and a verified 30 mm lift.</p></div>
-          <div class="robot-evidence">
-            <figure class="robot-view"><video id="robot-video" controls muted playsinline preload="none" poster="assets/robot-execution.jpg" src="assets/robot-execution.mp4" aria-label="Complete bottle robot execution"></video><figcaption id="robot-stage">Recorded bottle execution · Run16</figcaption></figure>
-            <div class="signal-view">
-              <h4>Logged resistance proxy</h4><p class="signal-units">Discrete windows · session-relative raw units</p>
-              <svg id="signal-plot" viewBox="0 0 480 310" role="img" aria-label="Measured discrete tactile windows, aligned to robot playback"></svg>
-              <div class="measurement"><span>Latest logged window</span><strong id="signal-value">—</strong><span id="signal-phase">Play or select a stage</span></div>
-              <p class="signal-condition" id="signal-condition">Each regrasp establishes a fresh baseline.</p>
-            </div>
-          </div>
-          <div class="execution-controls"><div class="seek-buttons" aria-label="Robot stages"><button data-robot-time="23.8">Press</button><button data-robot-time="29.05">First twist</button><button data-robot-time="41.34">Reset &amp; regrasp</button><button data-robot-time="212.4">Final twist</button><button data-robot-time="219.45">Verify release</button><button data-robot-time="220.69">Lift cap</button></div><label class="speed-label">Playback <select id="robot-speed" aria-label="Robot playback speed"><option value="1">1×</option><option value="2">2×</option><option value="4">4×</option><option value="8">8×</option></select></label></div>
-          <div class="release-summary"><div><strong>0.057</strong><span>Final resistance proxy</span></div><div><strong>0.386</strong><span>Recorded release threshold</span></div><div><strong>30 mm</strong><span>Verified cap lift</span></div></div>
-          <p class="small-note centered">Low resistance, retained contact, and fresh stationary verification permit the lift.<br>The run starts with the bottle upright and ends at cap lift. No synchronized tactile RGB was recorded.</p>
-        </div>
-        <div id="cup-panel" role="tabpanel" aria-labelledby="cup-tab" hidden>
-          <div class="demo-heading"><h3>Extracting one cup from a nested stack</h3><p>A scripted height correction, with synchronized tactile recording.</p></div>
-          <div class="cup-media"><figure class="cup-front"><video id="cup-video" controls muted playsinline preload="none" poster="assets/cup-front.jpg" src="assets/cup-front.mp4" aria-label="Robot top-cup extraction"></video><figcaption>Robot execution</figcaption></figure><div class="cup-sensors"><figure><video id="cup-left" muted playsinline preload="none" poster="assets/cup-left.jpg" src="assets/cup-left.mp4" aria-label="Recorded tactile stream A"></video><figcaption>Tactile stream A</figcaption></figure><figure><video id="cup-right" muted playsinline preload="none" poster="assets/cup-right.jpg" src="assets/cup-right.mp4" aria-label="Recorded tactile stream B"></video><figcaption>Tactile stream B</figcaption></figure></div></div>
-          <p class="small-note centered">The retry is scripted; tactile signals are recorded for offline shadow analysis.<br>The single-cup outcome is confirmed from the front view and operator review.</p>
-        </div>
-      </div>
-    </section>
-
-    <section class="section evidence-section" id="resources" aria-labelledby="resources-title">
-      <div class="container reading">
-        <div class="section-intro"><h2 id="resources-title">About these demonstrations</h2><p>The architecture joins task intent, relative interaction, planning, and touch. The recordings show the current task-specific implementations.</p></div>
-        <div class="evidence-notes"><details><summary>What is measured in the bottle experiment?</summary><p>Online decisions use raw SDK Fz channels relative to a fresh baseline for each grasp. The plotted points are discrete logged median windows, not a continuous calibrated force or torque trace. Release requires a prior resistance peak, fresh low windows, retained contact, and a stationary confirmation.</p><p>The six 90° twist segments produce 540° total rotation. Five automatic reset cycles accommodate the wrist range. The final action lifts the released cap by 30 mm.</p></details><details><summary>Which parts explain the framework?</summary><p>The hand masks and keypoints are actual offline reprocessing of the recorded demonstration. They are not presented as the historical live inputs to the recorded robot run. The relation-transfer drawings and readable policy illustrate the architecture; the recorded hardware executors are task-specific.</p></details><details><summary>How should the cup example be interpreted?</summary><p>The initial probe, unloading, and +6 mm height correction are scripted. Tactile streams are recorded and examined offline in shadow mode. They do not trigger the retry online. The front camera and operator review confirm the single-cup result.</p></details></div>
-        <div class="resource-links"><a href="assets/tactile-agent-film.mp4" download>Download film <span>↗</span></a><a href="assets/tactile-agent-film.srt" download>English subtitles <span>↗</span></a><a href="assets/bottle-windows.json" download>Recorded tactile windows <span>↗</span></a></div>
-      </div>
+    <section id="citation" class="reveal">
+      <h2>Citation</h2>
+      <p class="muted">The paper is under anonymous review. A citable version will be posted after the review period.</p>
+      <div class="bib"><button type="button" id="copy-bib">Copy</button><pre id="bib">@inproceedings{cats2027,
+  title     = {Code as Tactile Supervisor: Grounding Robot Agents with Demonstration Priors and Tactile Supervision},
+  author    = {Anonymous},
+  booktitle = {Under review},
+  year      = {2027}
+}</pre></div>
     </section>
   </main>
-  <footer><p><strong>Tactile Agent</strong><br>One demonstration. Object-relative interaction. Task-specific touch.</p><p class="credit">Presentation inspired by <a href="https://yuyaoliu.me/projects/rapid/" target="_blank" rel="noopener noreferrer">RAPID</a>. Demonstration media and original diagrams from this project.</p></footer>
-  <dialog id="stage-dialog" aria-labelledby="stage-dialog-title"><div class="dialog-heading"><h2 id="stage-dialog-title">Stage</h2><button id="close-stage" aria-label="Close stage video">×</button></div><video id="stage-player" controls muted playsinline loop></video><p id="stage-dialog-description"></p></dialog>
+</div>
+
+<footer>Page layout inspired by the <a href="https://tactile-reactive-dexterous.github.io/">T-Rex</a> project page. Typeset in Gelasio (SIL Open Font License).</footer>
+
+<script src="app.js"></script>
 </body>
 </html>
