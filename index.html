@@ -41,8 +41,14 @@
         <h1><span class="short">CaTS</span>: Code as Tactile Supervisor</h1>
       </div>
       <p class="subtitle">Grounding Robot Agents with Demonstration Priors and Tactile Supervision</p>
-      <p class="authors">Anonymous authors</p>
-      <p class="venue">CVPR 2027 submission · under review</p>
+      <p class="authors">
+        <a href="https://openreview.net/profile?id=~Zhuoran_Li7">Zhuoran Li</a><sup>1,2</sup>,
+        <a href="https://openreview.net/profile?id=~Yizhe_Wu1">Yizhe Wu</a><sup>2</sup>,
+        <a href="https://openreview.net/profile?id=~Rui_Li75">Rui Li</a><sup>2</sup>,
+        <a href="https://openreview.net/profile?id=~Hao_Ma6">Hao Ma</a><sup>1</sup>,
+        <a href="https://openreview.net/profile?id=~Yi_Ma4">Yi Ma</a><sup>1</sup>
+      </p>
+      <p class="affils"><span><sup>1</sup><a href="https://www.hku.hk/">The University of Hong Kong</a></span><span><sup>2</sup><a href="https://www.vit.ai/">ViTai Robotics</a></span></p>
       <div class="buttons">
         <span class="btn" aria-disabled="true" title="Released after the review period">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6"/></svg>Paper <span class="soon">soon</span></span>
@@ -136,50 +142,76 @@
 
     <section id="results" class="reveal">
       <h2>Results</h2>
+
       <h3 id="real">Real robot</h3>
-      <p>CaTS achieves a 66.7% mean success rate over six real-robot tasks (10 trials each), compared with 21.7% for Agent0 + D and 18.3% for Agent0. Both baselines receive full raw tactile observations and share the same foundation-model backbone; Agent0 + D also receives the same demonstration.</p>
-      <div class="bars" data-bars='[["CaTS (Ours)",66.7,1],["Agent0 + D",21.7],["Agent0",18.3]]'></div>
-      <div class="two-col">
-        <div>
-          <div class="chart-title">CaTS success per task (%)</div>
-          <div class="bars" data-bars='[["T1 Cap",80,1],["T2 Cup",50,1],["T3 Bowl",60,1],["T4 USB",70,1],["T5 Pipette",80,1],["T6 Tube",60,1]]'></div>
-          <p class="muted">Both baselines score 0% on cap opening, top-cup extraction and tube reorientation-and-insertion.</p>
-        </div>
-        <figure class="card" style="margin-top:20px">
-          <img src="assets/cats/fig4b-executions.jpg" width="1007" height="654" alt="Representative CaTS execution sequences for the six tasks" loading="lazy">
-          <figcaption><b>Representative CaTS executions.</b></figcaption>
-        </figure>
+      <p>Six tasks, 10 trials each. Both baselines receive full raw tactile observations and share the same foundation-model backbone; Agent0 + D also receives the same demonstration.</p>
+      <div class="race card-box" id="real-race">
+        <div class="race-head"><span>Mean success over 6 real-robot tasks</span><button type="button" class="ghost" data-replay="real-race">↻ Replay</button></div>
+        <div class="race-rows" data-race='[["CaTS (Ours)",66.7,1],["Agent0 + D",21.7],["Agent0",18.3]]'></div>
+        <div class="delta" data-delta="+45.0 points over the best baseline"></div>
       </div>
+      <p class="hint-text">Click a task to watch it.</p>
+      <div class="task-cards" id="task-cards"></div>
+      <figure class="card">
+        <img src="assets/cats/fig4b-executions.jpg" width="1007" height="654" alt="Representative CaTS execution sequences for the six tasks" loading="lazy">
+        <figcaption><b>Representative CaTS executions.</b></figcaption>
+      </figure>
 
       <h3 id="sim">Simulation</h3>
-      <p>Across twenty simulated tasks — eight single-arm tasks from UniVTAC and twelve NeoSim tasks (four single-arm, eight bimanual) — CaTS reaches 61.8% mean success, compared with 43.1% for Agent0 + D and 30.6% for Agent0. CaTS is most effective when contact changes must trigger different responses across stages (Insert Hole, Insert Tube, Pull-out Key), and demonstrations guide coordinated action modes across two arms (Cup Handover, Stack Plates, Unstack Cup).</p>
-      <div class="legend"><span><i style="background:#2aa59a"></i>UniVTAC</span><span><i style="background:var(--purple)"></i>NeoSim</span><span><i style="background:var(--accent-soft)"></i>highlighted in the paper</span></div>
-      <div class="sim-grid" id="sim-grid"></div>
-      <div class="two-col">
-        <div><div class="chart-title">UniVTAC · mean of 8 tasks (%)</div><div class="bars" data-bars='[["CaTS (Ours)",63.3,1],["UniV.",48.0],["Agent0 + D",46.7],["Agent0",41.0],["VITaL",40.5],["ACT",30.9]]'></div></div>
-        <div><div class="chart-title">NeoSim · mean of 12 tasks (%)</div><div class="bars" data-bars='[["CaTS (Ours)",60.7,1],["π0.5",45.8],["Agent0 + D",40.6],["LingBot",32.1],["Agent0",23.7],["Xiaomi-R0",23.4]]'></div></div>
+      <p>Twenty simulated tasks: eight single-arm tasks from UniVTAC and twelve NeoSim tasks (four single-arm, eight bimanual), 90 trials each. The paper singles out tasks where contact changes must switch the response between stages (Insert Hole, Insert Tube, Pull-out Key) and bimanual tasks where the demonstration coordinates both arms (Cup Handover, Stack Plates, Unstack Cup).</p>
+      <div class="race card-box" id="sim-race">
+        <div class="race-head">
+          <div class="seg" role="tablist" aria-label="Benchmark">
+            <button type="button" aria-selected="true" data-set="all">All 20 tasks</button>
+            <button type="button" aria-selected="false" data-set="uni">UniVTAC</button>
+            <button type="button" aria-selected="false" data-set="neo">NeoSim</button>
+          </div>
+          <button type="button" class="ghost" data-replay="sim-race">↻ Replay</button>
+        </div>
+        <div class="race-rows"></div>
+        <div class="delta"></div>
+        <p class="race-note"></p>
       </div>
-      <p class="muted">Agent0, Agent0 + D and CaTS use 90 trials per simulated task with one fixed program per task. Published baseline results share the official tasks and metric but serve as reference points, not same-protocol controls.</p>
+      <div class="grid-tools">
+        <div class="seg" role="tablist" aria-label="Filter tasks">
+          <button type="button" aria-selected="true" data-filter="all">All</button>
+          <button type="button" aria-selected="false" data-filter="UniVTAC">UniVTAC</button>
+          <button type="button" aria-selected="false" data-filter="NeoSim">NeoSim</button>
+          <button type="button" aria-selected="false" data-filter="hl">Paper highlights</button>
+        </div>
+        <label class="switch"><input type="checkbox" id="sort-sim"> Sort by success</label>
+      </div>
+      <div class="sim-grid" id="sim-grid"></div>
+      <p class="muted">CaTS success per task (paper Fig. 5). Hover or tap a card for its rank and, for highlighted tasks, why the paper singles it out.</p>
 
       <h3 id="ablations">Ablations</h3>
-      <p><b>Demonstration priors.</b> Removing demonstration priors from tactile supervision — while keeping the same robot stage plan and tactile patterns — halves stage success (55 episodes, six representative simulated tasks).</p>
-      <table>
-        <thead><tr><th>Method</th><th class="num">Next action accuracy</th><th class="num">Stage success</th></tr></thead>
-        <tbody>
-          <tr class="ours"><td>CaTS</td><td class="num">76.9%</td><td class="num">80.0%</td></tr>
-          <tr><td>CaTS w/o demo prior</td><td class="num">65.1%</td><td class="num">40.0%</td></tr>
-        </tbody>
-      </table>
-      <p><b>Cross-sensor transfer.</b> One supervision program, configured once on GS Mini, transfers unchanged to GF225 and Xense WS by replacing only the sensor adapter (Lift Can, UniVTAC, 90 trials per test). Slip-onset indentation differs by less than 0.05 mm across sensors, and overload recovery stays at 100%.</p>
-      <table>
-        <thead><tr><th>Sensor</th><th class="num">Slip onset, standard (mm)</th><th class="num">Slip onset, induced (mm)</th><th class="num">Unload change (mm)</th><th class="num">Overload recovery</th></tr></thead>
-        <tbody>
-          <tr><td>GS Mini</td><td class="num">5.715</td><td class="num">5.774</td><td class="num">−0.384</td><td class="num">100%</td></tr>
-          <tr><td>GF225</td><td class="num">5.763</td><td class="num">5.752</td><td class="num">−0.970</td><td class="num">100%</td></tr>
-          <tr><td>Xense WS</td><td class="num">5.722</td><td class="num">5.747</td><td class="num">−0.329</td><td class="num">100%</td></tr>
-        </tbody>
-      </table>
-      <p><b>Local feedback latency.</b> Across five simulated tasks, CaTS recovers its initial program-generation cost after about 17–25 feedback decisions relative to CaTS-Online, which invokes the agent for every new tactile observation; the advantage grows as feedback demand increases.</p>
+      <div class="two-col">
+        <div class="card-box toggle-box" id="prior-box">
+          <div class="race-head"><span>Demonstration priors</span>
+            <label class="switch big"><input type="checkbox" id="prior-toggle" checked> <span id="prior-label">with priors</span></label></div>
+          <div class="kv"><span>Stage success</span><b id="prior-stage">80.0%</b></div>
+          <div class="bar-track lg"><span class="bar-fill" id="prior-stage-bar" style="width:80%"></span></div>
+          <div class="kv"><span>Next action accuracy</span><b id="prior-acc">76.9%</b></div>
+          <div class="bar-track lg"><span class="bar-fill" id="prior-acc-bar" style="width:76.9%"></span></div>
+          <p class="muted small">Same stage plan and tactile patterns; only the demonstration priors in tactile supervision are removed. 55 episodes, six simulated tasks.</p>
+        </div>
+        <div class="card-box" id="sensor-box">
+          <div class="race-head"><span>Cross-sensor transfer</span></div>
+          <div class="seg" role="tablist" aria-label="Sensor">
+            <button type="button" aria-selected="true" data-sensor="0">GS Mini</button>
+            <button type="button" aria-selected="false" data-sensor="1">GF225</button>
+            <button type="button" aria-selected="false" data-sensor="2">Xense WS</button>
+          </div>
+          <div class="sensor-vals">
+            <div><b data-k="0">5.715</b><span>slip onset, standard (mm)</span></div>
+            <div><b data-k="1">5.774</b><span>slip onset, induced (mm)</span></div>
+            <div><b data-k="2">−0.384</b><span>unloading change (mm)</span></div>
+            <div><b data-k="3">100%</b><span>overload recovery</span></div>
+          </div>
+          <p class="muted small">One program, configured on GS Mini and transferred by swapping only the sensor adapter (Lift Can, UniVTAC, 90 trials per test). Slip-onset estimates differ by under 0.05 mm across sensors.</p>
+        </div>
+      </div>
+      <p><b>Local feedback latency.</b> Across five simulated tasks, CaTS recovers its initial program-generation cost after about 17–25 feedback decisions relative to CaTS-Online, which queries the agent for every new tactile observation; the advantage grows with feedback demand.</p>
     </section>
 
     <section id="conclusion" class="reveal">
@@ -189,10 +221,10 @@
 
     <section id="citation" class="reveal">
       <h2>Citation</h2>
-      <p class="muted">The paper is under anonymous review. A citable version will be posted after the review period.</p>
+      <p class="muted">A citable version will be posted once the paper is public.</p>
       <div class="bib"><button type="button" id="copy-bib">Copy</button><pre id="bib">@inproceedings{cats2027,
   title     = {Code as Tactile Supervisor: Grounding Robot Agents with Demonstration Priors and Tactile Supervision},
-  author    = {Anonymous},
+  author    = {Li, Zhuoran and Wu, Yizhe and Li, Rui and Ma, Hao and Ma, Yi},
   booktitle = {Under review},
   year      = {2027}
 }</pre></div>
