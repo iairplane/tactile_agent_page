@@ -296,4 +296,61 @@
       copy.textContent = "Copied"; setTimeout(() => (copy.textContent = "Copy"), 1500);
     }).catch(() => {});
   });
+
+  // ---------- simulation reel ----------
+  (function () {
+    const reel = document.getElementById("sim-reel");
+    if (!reel) return;
+    const ROWS = [
+      [["lift_bottle", "u", "Lift (Bottle)"], ["lift_can", "u", "Lift (Can)"], ["place_bottle", "u", "Place (Bottle)"], ["classify", "u", "Classify"], ["insert_hole", "u", "Insert (Hole)"], ["insert_hdmi", "u", "Insert (HDMI)"]],
+      [["insert_tube", "u", "Insert (Tube)"], ["pull_key", "u", "Pull (Key)"], ["grasp_chip", "n", "Grasp (Chip)"], ["insert_usb", "n", "Insert (USB)"], ["insert_screw", "n", "Insert (Screw)"], ["place_gears", "n", "Place (Gears)"]],
+      [["unstack_bowl", "n", "Unstack (Bowl)"], ["handover_cup", "n", "Handover (Cup)"], ["stack_cups", "n", "Stack (Cups)"], ["stack_plates", "n", "Stack (Plates)"], ["stack_bowls", "n", "Stack (Bowls)"], ["unstack_cup", "n", "Unstack (Cup)"]],
+    ];
+    const tile = ([id, b, name]) => `<div class="reel-tile ${b}"><video muted loop playsinline preload="none" poster="assets/cats/sim/${id}.jpg" src="assets/cats/sim/${id}.mp4"></video><span><i></i>${name}</span></div>`;
+    const rows = ROWS.map((r, k) => {
+      const row = document.createElement("div");
+      row.className = "reel-row";
+      row.innerHTML = `<div class="reel-track">${r.map(tile).join("")}${r.map(tile).join("")}</div>`;
+      reel.appendChild(row);
+      return { el: row, dir: k % 2 ? -1 : 1, speed: 26 + k * 6, pos: 0, hold: 0 };
+    });
+    const still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const half = (r) => r.el.scrollWidth / 2;
+    rows.forEach((r) => {
+      const el = r.el, pause = (ms) => { r.hold = performance.now() + ms; };
+      el.addEventListener("mouseenter", () => { r.hover = true; });
+      el.addEventListener("mouseleave", () => { r.hover = false; pause(600); });
+      el.addEventListener("wheel", () => pause(2500), { passive: true });
+      el.addEventListener("touchstart", () => pause(3000), { passive: true });
+      el.addEventListener("scroll", () => { if (r.hover || performance.now() < r.hold) r.pos = el.scrollLeft; }, { passive: true });
+      // mouse drag to scroll on desktop; touch uses native panning
+      let sx = 0, sl = 0, drag = false;
+      el.addEventListener("pointerdown", (e) => { if (e.pointerType !== "mouse") return; drag = true; sx = e.clientX; sl = el.scrollLeft; el.classList.add("dragging"); el.setPointerCapture(e.pointerId); });
+      el.addEventListener("pointermove", (e) => { if (!drag) return; el.scrollLeft = sl - (e.clientX - sx); r.pos = el.scrollLeft; });
+      const end = () => { if (!drag) return; drag = false; el.classList.remove("dragging"); pause(1500); };
+      el.addEventListener("pointerup", end); el.addEventListener("pointercancel", end);
+    });
+    let visible = false, last = 0, started = false;
+    function start() {
+      if (started) return; started = true;
+      rows.forEach((r) => { if (r.dir < 0) { r.pos = half(r) - 1; r.el.scrollLeft = r.pos; } });
+    }
+    function tick(now) {
+      const dt = Math.min(0.05, (now - last) / 1000 || 0); last = now;
+      if (visible && !still) rows.forEach((r) => {
+        const h = half(r);
+        if (!r.hover && now > r.hold) r.pos += r.dir * r.speed * dt;
+        if (r.pos >= h) r.pos -= h; else if (r.pos < 0) r.pos += h;
+        if (!r.hover && now > r.hold) r.el.scrollLeft = r.pos;
+        else if (r.el.scrollLeft >= h) { r.el.scrollLeft -= h; r.pos = r.el.scrollLeft; } else if (r.el.scrollLeft <= 0) { r.el.scrollLeft += h; r.pos = r.el.scrollLeft; }
+      });
+      requestAnimationFrame(tick);
+    }
+    new IntersectionObserver((ents) => {
+      visible = ents[0].isIntersecting;
+      if (visible) start();
+      reel.querySelectorAll("video").forEach((v) => { if (visible) { v.preload = "auto"; v.play().catch(() => {}); } else v.pause(); });
+    }, { rootMargin: "200px 0px" }).observe(reel);
+    requestAnimationFrame(tick);
+  })();
 })();

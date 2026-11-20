@@ -6,12 +6,12 @@
 <title>CaTS: Code as Tactile Supervisor</title>
 <meta name="description" content="CaTS grounds robot agents with demonstration priors and tactile supervision: one human RGB-D demonstration becomes a locally executable program with stage-specific tactile supervisors.">
 <link rel="icon" href="assets/cats/logo.svg" type="image/svg+xml">
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="style.css?v=8">
 </head>
 <body>
 
 <header class="hero" aria-label="CaTS teaser">
-  <video id="hero-video" src="assets/cats/hero-teaser.mp4" poster="assets/cats/hero-teaser-end.jpg" autoplay muted playsinline preload="auto" aria-hidden="true"></video>
+  <video id="hero-video" src="assets/cats/hero-teaser.mp4?v=8" poster="assets/cats/hero-teaser-end.jpg?v=8" autoplay muted playsinline preload="auto" aria-hidden="true"></video>
   <div class="hero-progress"><i id="hero-bar"></i></div>
   <a class="hint" href="#title" id="hero-skip">Skip ↓</a>
 </header>
@@ -62,7 +62,7 @@
 
     <section id="video" class="reveal">
       <figure class="video-wrap">
-        <video src="assets/cats/cats-video.mp4" poster="assets/cats/cats-video-poster.jpg" controls preload="metadata" playsinline></video>
+        <video src="assets/cats/cats-video.mp4?v=8" poster="assets/cats/cats-video-poster.jpg" controls preload="metadata" playsinline></video>
         <figcaption><b>Overview video.</b> From one human demonstration to a locally executed program with tactile supervision, followed by six real-robot tasks and the simulation results.</figcaption>
       </figure>
     </section>
@@ -160,6 +160,8 @@
 
       <h3 id="sim">Simulation</h3>
       <p>Twenty simulated tasks: eight single-arm tasks from UniVTAC and twelve NeoSim tasks (four single-arm, eight bimanual), 90 trials each. The paper singles out tasks where contact changes must switch the response between stages (Insert Hole, Insert Tube, Pull-out Key) and bimanual tasks where the demonstration coordinates both arms (Cup Handover, Stack Plates, Unstack Cup).</p>
+      <div class="sim-reel" id="sim-reel" aria-label="Rollouts of the simulated tasks, scrolling sideways"></div>
+      <p class="muted small reel-note">Rollouts in UniVTAC (<span class="dot-u"></span>) and NeoSim (<span class="dot-n"></span>), sped up for display. Drag or swipe a row to look around.</p>
       <div class="race card-box" id="sim-race">
         <div class="race-head">
           <div class="seg" role="tablist" aria-label="Benchmark">
@@ -235,6 +237,6 @@
 
 <footer>Page layout inspired by the <a href="https://tactile-reactive-dexterous.github.io/">T-Rex</a> project page. Typeset in Gelasio (SIL Open Font License).</footer>
 
-<script src="app.js"></script>
+<script src="app.js?v=8"></script>
 </body>
 </html>

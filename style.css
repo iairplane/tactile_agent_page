@@ -227,3 +227,20 @@ footer { text-align: center; color: var(--muted); font-size: 14px; padding: 30px
   .task-cards { grid-template-columns: repeat(2, 1fr); }
   .race-row { grid-template-columns: 92px 1fr 58px; font-size: 14px; }
 }
+
+/* ---------- simulation reel: three rows that drift sideways and can be swiped ---------- */
+.sim-reel { margin: 18px 0 6px; display: grid; gap: 10px; -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent); mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent); }
+.reel-row { overflow-x: auto; overflow-y: hidden; scrollbar-width: none; cursor: grab; touch-action: pan-x pan-y; overscroll-behavior-x: contain; }
+.reel-row::-webkit-scrollbar { display: none; }
+.reel-row.dragging { cursor: grabbing; }
+.reel-track { display: flex; gap: 10px; width: max-content; }
+.reel-tile { position: relative; flex: 0 0 auto; width: 248px; aspect-ratio: 16 / 9; border-radius: 10px; overflow: hidden; background: #0a0b0d; box-shadow: 0 1px 2px rgba(20,40,60,.12); user-select: none; }
+.reel-tile video { width: 100%; height: 100%; object-fit: cover; display: block; pointer-events: none; }
+.reel-tile::after { content: ""; position: absolute; inset: auto 0 0 0; height: 46%; background: linear-gradient(transparent, rgba(10,11,13,.78)); pointer-events: none; }
+.reel-tile span { position: absolute; left: 10px; bottom: 7px; z-index: 1; color: #fff; font-size: 14.5px; line-height: 1.2; display: flex; align-items: center; gap: 6px; }
+.reel-tile span i { width: 8px; height: 8px; border-radius: 50%; flex: 0 0 auto; }
+.reel-tile.u { outline: 2px solid rgba(60,200,180,.55); outline-offset: -2px; } .reel-tile.u span i, .dot-u { background: #3cc8b4; }
+.reel-tile.n { outline: 2px solid rgba(180,140,245,.6); outline-offset: -2px; } .reel-tile.n span i, .dot-n { background: #b48cf5; }
+.dot-u, .dot-n { display: inline-block; width: 8px; height: 8px; border-radius: 50%; vertical-align: 1px; }
+.reel-note { margin-top: 4px; }
+@media (max-width: 720px) { .reel-tile { width: 200px; } }
