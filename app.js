@@ -275,7 +275,7 @@
       if (el.id === "sim-race") showSim("all", true);
       io.unobserve(el);
     });
-  }, { threshold: 0.2 });
+  }, { threshold: 0, rootMargin: "0px 0px -12% 0px" });
   document.querySelectorAll(".reveal, .bars, #sim-grid, #task-cards, #real-race, #sim-race").forEach((el) => io.observe(el));
 
   // ---------- table of contents highlight ----------
@@ -352,5 +352,139 @@
       reel.querySelectorAll("video").forEach((v) => { if (visible) { v.preload = "auto"; v.play().catch(() => {}); } else v.pause(); });
     }, { rootMargin: "200px 0px" }).observe(reel);
     requestAnimationFrame(tick);
+  })();
+
+  // ---------- framework explorers ----------
+  (function () {
+    const FIGS = {
+      "fx-overview": { steps: [
+        { k: "1", t: "One RGB-D demonstration", s: "what to do", r: [2.6, 13.6, 17.8, 73.6],
+          d: "A single human RGB-D demonstration of the task. CaTS tracks the hand and the object and splits the demonstration into ordered stages, here Approach, Twist, Verify and Lift.",
+          subs: [
+            { t: "Hand and object tracking", r: [3.5, 31.6, 17.0, 41.8], d: "The hand branch propagates hand masks (SAM 2.1), estimates 2D keypoints (RTMPose) and lifts them to 3D joints with local depth; the object branch segments targets (SAM3) and estimates 6-DoF poses." },
+            { t: "Demonstration stages", r: [2.6, 73.5, 17.8, 12.5], d: "Changes in hand–object relative motion and contact divide the demonstration into stages, each with a subgoal, a motion intent and the contacts to establish, maintain or release." } ] },
+        { k: "2", t: "CaTS agent", s: "plan and supervise", r: [21.3, 13.6, 24.3, 73.6],
+          d: "At planning time an agent turns the demonstration into a robot stage plan and writes a tactile supervisor for every stage that depends on contact.",
+          subs: [
+            { t: "Task decomposition", r: [22.0, 23.3, 23.0, 14.9], d: "Mechanism priors expand the demonstrated Twist into Press & Twist and Lift & Twist, which a child-resistant cap requires. The robot plan becomes Approach → Press & Twist → Lift & Twist → Lift." },
+            { t: "Supervisor synthesis", r: [22.0, 40.4, 23.0, 19.0], d: "The agent reads tactile-pattern priors, physics-grounded patterns with a fixed meaning, and composes them into stage supervisors." },
+            { t: "Rotation & Release Guards", r: [22.1, 59.5, 22.6, 23.2], d: "Rotation Guard watches the marker-flow trend to detect when the cap engages during Press & Twist. Release Guard watches the force signal to confirm the cap is free to lift." } ] },
+        { k: "3", t: "Executable program", s: "local runtime", r: [46.5, 13.6, 28.7, 73.6],
+          d: "The stage plan and its supervisors are compiled once into an ordinary program. From here on, no foundation model is called during execution.",
+          subs: [
+            { t: "Stage plan + supervisor calls", r: [47.7, 23.9, 26.5, 36.9], d: "Each stage is a function call guarded by its supervisor: press_twist runs until the cap is engaged, lift_twist until rotation is complete, and a probe decides whether to lift or retry with a bounded number of attempts." },
+            { t: "Embedded tactile supervision", r: [47.7, 63.2, 26.5, 19.9], d: "At every control step raw tactile data are encoded into contact patterns, the active stage supervisor evaluates them, and its result drives the program's control flow." } ] },
+        { k: "4", t: "Tactile-guided execution", s: "closed loop on the robot", r: [76.1, 13.6, 21.6, 73.6],
+          d: "The robot runs the program with live touch in the loop: Press & Twist, Lift & Twist, then Lift Cap, each stage ending when its tactile condition holds.",
+          subs: [
+            { t: "Robot stages", r: [77.0, 27.5, 20.6, 60.0], d: "The fingertip's tactile image is checked locally at every step, so a stage advances on contact evidence rather than on a fixed timer." },
+            { t: "Live tactile loop", r: [49.5, 80.5, 38.5, 15.0], d: "Live tactile observations flow back into the program's embedded supervision, closing the feedback loop on the robot itself." } ] },
+      ] },
+      "fx-pipeline": { steps: [
+        { k: "A", t: "Demo-to-robot plan adaptation", s: "demonstration → robot stage plan", r: [0.5, 0.5, 51.5, 72.3],
+          d: "Turns the task, the scene and one human RGB-D demonstration into a robot stage plan P adapted to the object, the scene and the robot.",
+          subs: [
+            { t: "Inputs", r: [1.7, 7.7, 49.4, 14.1], d: "A task description (open the child-resistant cap), the robot's scene, and one human RGB-D demonstration." },
+            { t: "Demo processing", r: [1.7, 22.4, 49.4, 14.3], d: "The demonstration is segmented into stages with a motion intent per stage. For grasping stages, the human contact location, closing axis and approach direction are extracted, and only GraspGen-X robot grasps consistent with them are kept." },
+            { t: "Plan adaptation & expansion", r: [1.4, 39.4, 49.7, 22.5], d: "The agent maps human stages to robot stages using internal priors, for example splitting Twist into Press & Twist and Lift & Twist to satisfy the cap mechanism." },
+            { t: "Robot stage plan P", r: [1.4, 62.7, 49.7, 8.7], d: "Each robot stage specifies a goal, TCP targets, a gripper command and a contact requirement, such as keeping top or side contact while twisting to unseal." } ] },
+        { k: "B", t: "Hierarchical tactile supervision", s: "raw touch → patterns → supervisors", c: "c-b", r: [0.4, 73.0, 51.6, 27.0],
+          d: "Three layers link agent-driven supervisor synthesis at planning time with local tactile evaluation at execution time. Because L2 patterns have a fixed physical meaning, one supervision program runs unchanged across different tactile sensors.",
+          subs: [
+            { t: "Stage context", r: [11.4, 73.0, 28.0, 5.1], d: "Each stage hands its goal, motion and expected contact change to the tactile hierarchy, so supervisors are written for that stage specifically." },
+            { t: "L1 · raw observations", r: [1.1, 84.5, 14.3, 14.2], d: "Raw tactile images (RGB) and marker coordinates from the visuotactile sensor." },
+            { t: "L2 · physics-grounded patterns", r: [17.4, 84.5, 16.9, 14.2], d: "Patterns such as normal force, torque, contact distribution and marker flow. The agent reads their definitions while planning; a unified encoder fills in their values at run time." },
+            { t: "L3 · stage supervisors", r: [36.2, 84.5, 15.1, 14.2], d: "Stage-specific supervisors composed from L2 patterns, such as Slip, Rotate and Jam Guards." } ] },
+        { k: "C", t: "Program synthesis & execution", s: "compile once, run locally", r: [56.2, 0.5, 43.6, 99.5],
+          d: "The stage plan and the supervisors compile into one program that governs bounded responses and stage transitions on the robot, with no further model calls.",
+          subs: [
+            { t: "Compile once", r: [57.0, 9.0, 42.0, 24.1], d: "Per stage, the agent synthesizes a bounded response set and a visual-plus-tactile supervisor, then assembles them with transition logic into the program Π." },
+            { t: "Local closed-loop execution", r: [57.2, 36.8, 41.9, 61.8], d: "The compiled program runs on the robot; all feedback processing is local." },
+            { t: "Active stage", r: [59.4, 46.1, 37.6, 6.0], d: "At any moment one stage is active, carrying its plan, supervisor, responses and transition logic." },
+            { t: "Observations", r: [59.2, 53.9, 14.4, 17.7], d: "Vision, raw touch and the tactile patterns encoded from it at every control step." },
+            { t: "Stage supervisor", r: [74.1, 54.1, 14.2, 17.5], d: "Visual and tactile supervisors evaluate the observations together with robot state and memory." },
+            { t: "Response & transition", r: [60.5, 74.2, 35.4, 5.6], d: "The supervisor selects a bounded response, and the program moves to the next stage when its transition condition holds." } ] },
+      ] },
+    };
+    const still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    Object.entries(FIGS).forEach(([id, cfg]) => {
+      const root = document.getElementById(id);
+      if (!root) return;
+      const stage = root.querySelector(".fx-stage"), view = root.querySelector(".fx-view"), hole = root.querySelector(".fx-hole");
+      const stepsEl = root.querySelector(".fx-steps"), subsEl = root.querySelector(".fx-subs"), detail = root.querySelector(".fx-detail");
+      const bar = root.querySelector(".fx-bar i"), play = root.querySelector(".fx-play"), reset = root.querySelector(".fx-reset");
+      stepsEl.style.setProperty("--n", cfg.steps.length);
+      let cur = { si: -1, bi: -1 }, timer = null, tourIdx = 0, scale = 1;
+      const intro = `<div><h4>${id === "fx-overview" ? "From one demonstration to tactile-guided execution" : "CaTS pipeline"}</h4><p>${id === "fx-overview"
+        ? "CaTS turns one human RGB-D demonstration into a robot stage plan, has an agent synthesize a tactile supervisor for each stage, and compiles both into a local program that closes the feedback loop on the robot."
+        : "(A) Demo-to-robot plan adaptation. (B) The three-layer tactile hierarchy. (C) The stage plan and supervisors compile into a local program that governs bounded responses and stage transitions."}</p></div>`;
+      cfg.steps.forEach((st, si) => {
+        const b = document.createElement("button");
+        b.type = "button"; b.className = "fx-step " + (st.c || ""); b.setAttribute("aria-pressed", "false");
+        b.innerHTML = `<span class="k">${st.k}</span><b>${st.t}</b><small>${st.s}</small>`;
+        b.addEventListener("click", () => { stopTour(); (cur.si === si && cur.bi < 0) ? select(-1, -1) : select(si, -1); });
+        stepsEl.appendChild(b);
+      });
+      function frame(r) {
+        const [x, y, w, h] = r;
+        scale = Math.max(1, Math.min(2.6, 0.92 * Math.min(100 / w, 100 / h)));
+        let tx = 50 - (x + w / 2) * scale, ty = 50 - (y + h / 2) * scale;
+        tx = Math.min(0, Math.max(100 - 100 * scale, tx)); ty = Math.min(0, Math.max(100 - 100 * scale, ty));
+        view.style.transform = `translate(${tx}%, ${ty}%) scale(${scale})`;
+        view.style.setProperty("--s", scale);
+        Object.assign(hole.style, { left: x + "%", top: y + "%", width: w + "%", height: h + "%" });
+      }
+      function select(si, bi) {
+        cur = { si, bi };
+        [...stepsEl.children].forEach((b, i) => b.setAttribute("aria-pressed", String(i === si)));
+        if (si < 0) {
+          root.classList.remove("on"); stage.classList.remove("zoomed");
+          view.style.transform = ""; view.style.setProperty("--s", 1); scale = 1;
+          subsEl.innerHTML = ""; detail.innerHTML = intro; return;
+        }
+        const st = cfg.steps[si], it = bi < 0 ? st : st.subs[bi];
+        subsEl.innerHTML = st.subs.map((s, i) => `<button type="button" class="fx-sub" aria-pressed="${i === bi}" style="animation-delay:${i * 50}ms">${s.t}</button>`).join("");
+        [...subsEl.children].forEach((b, i) => b.addEventListener("click", () => { stopTour(); select(si, cur.si === si && cur.bi === i ? -1 : i); }));
+        root.classList.add("on"); stage.classList.add("zoomed");
+        frame(it.r);
+        detail.innerHTML = `<div><h4>${st.k} · ${bi < 0 ? st.t : st.t + " → " + it.t}</h4><p>${it.d}</p></div>`;
+      }
+      // click the figure: zoom out if zoomed into the clicked spot's own region, else go to the smallest region under the cursor
+      stage.addEventListener("click", (e) => {
+        stopTour();
+        const rc = stage.getBoundingClientRect(), m = new DOMMatrix(getComputedStyle(view).transform);
+        const px = ((e.clientX - rc.left) - m.e) / m.a / rc.width * 100, py = ((e.clientY - rc.top) - m.f) / m.d / rc.height * 100;
+        const inside = (r) => px >= r[0] && px <= r[0] + r[2] && py >= r[1] && py <= r[1] + r[3];
+        let best = null;
+        cfg.steps.forEach((st, si) => {
+          if (inside(st.r) && (!best || st.r[2] * st.r[3] < best.a)) best = { si, bi: -1, a: st.r[2] * st.r[3] };
+          st.subs.forEach((s, bi) => { if (inside(s.r) && (!best || s.r[2] * s.r[3] < best.a)) best = { si, bi, a: s.r[2] * s.r[3] }; });
+        });
+        if (!best || (best.si === cur.si && best.bi === cur.bi)) select(-1, -1); else select(best.si, best.bi);
+      });
+      reset.addEventListener("click", () => { stopTour(); select(-1, -1); });
+      // guided tour through every step and its components
+      const tour = []; cfg.steps.forEach((st, si) => { tour.push([si, -1]); st.subs.forEach((_, bi) => tour.push([si, bi])); });
+      const DWELL = 3600;
+      function stopTour() { if (timer) { clearInterval(timer); timer = null; } play.textContent = "▶ Walk through"; bar.style.transition = "none"; bar.style.width = "0"; }
+      function stepTour() {
+        if (tourIdx >= tour.length) { stopTour(); select(-1, -1); return; }
+        const [si, bi] = tour[tourIdx++]; select(si, bi);
+        bar.style.transition = "none"; bar.style.width = (100 * (tourIdx - 1) / tour.length) + "%"; void bar.offsetWidth;
+        bar.style.transition = `width ${DWELL}ms linear`; bar.style.width = (100 * tourIdx / tour.length) + "%";
+      }
+      function startTour() { stopTour(); tourIdx = 0; play.textContent = "❚❚ Pause"; stepTour(); timer = setInterval(stepTour, DWELL); }
+      play.addEventListener("click", () => (timer ? stopTour() : startTour()));
+      select(-1, -1);
+      // the overview tours itself once when it first comes into view
+      if (id === "fx-overview" && !still) {
+        let toured = false;
+        const io = new IntersectionObserver((ents) => {
+          if (ents[0].isIntersecting && !toured) { toured = true; setTimeout(() => { if (cur.si < 0) startTour(); }, 600); }
+          else if (!ents[0].isIntersecting && timer) stopTour();
+        }, { threshold: 0.6 });
+        io.observe(stage);
+      }
+    });
   })();
 })();

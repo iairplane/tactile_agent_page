@@ -23,6 +23,7 @@
     <a href="#abstract">Abstract</a>
     <a href="#contributions">Contributions</a>
     <a href="#method">Method</a>
+    <a class="sub" href="#framework-overview">Framework explorer</a>
     <a class="sub" href="#plan">Demo-to-robot plan</a>
     <a class="sub" href="#hierarchy">Tactile hierarchy</a>
     <a class="sub" href="#program">Local program</a>
@@ -90,14 +91,29 @@
     <section id="method" class="reveal">
       <h2>Method</h2>
       <p>The demonstration says <i>what</i> to do. Touch says <i>whether it worked</i>. Code runs both locally. CaTS turns a single human RGB-D demonstration into a robot stage plan, has an agent synthesize a tactile supervisor for every stage, and compiles everything into one program that closes the feedback loop on the robot without calling a foundation model.</p>
-      <figure class="card">
-        <img src="assets/cats/fig1-overview.jpg" width="2000" height="873" alt="Overview: one RGB-D demonstration, the CaTS agent, an executable program and tactile-guided execution" loading="lazy">
-        <figcaption><b>From one demonstration to a local program with tactile supervision.</b> In child-resistant cap opening, mechanism priors expand the demonstrated twist into Press &amp; Twist and Lift &amp; Twist; Rotation Guard detects cap engagement and Release Guard verifies release, letting live tactile feedback govern these stages and the transition to the final lift.</figcaption>
-      </figure>
-      <figure class="card">
-        <img src="assets/cats/fig2-pipeline.jpg" width="1800" height="1042" alt="CaTS pipeline with three parts: demo-to-robot plan adaptation, hierarchical tactile supervision, program synthesis and execution" loading="lazy">
-        <figcaption><b>CaTS pipeline.</b> (A) Demo-to-robot plan adaptation. (B) The three-layer tactile hierarchy links agent-driven supervisor synthesis at planning time with local tactile evaluation at execution time. (C) The stage plan and supervisors compile into a local program that governs bounded responses and stage transitions.</figcaption>
-      </figure>
+      <h3 id="framework-overview">Overview explorer</h3>
+      <p class="hint-text">The walkthrough starts on its own; click a step, a sub-part, or any region of the figure to zoom in.</p>
+      <div class="fx card-box" id="fx-overview">
+        <div class="fx-steps" role="group" aria-label="Overview steps"></div>
+        <div class="fx-stage"><div class="fx-view">
+          <img src="assets/cats/fw-overview.jpg" width="2430" height="1101" alt="CaTS overview: one RGB-D demonstration, the CaTS agent (task decomposition and supervisor synthesis), an executable program with embedded tactile supervision, and tactile-guided execution">
+          <div class="fx-hole" aria-hidden="true"></div>
+        </div><div class="fx-bar"><i></i></div></div>
+        <div class="fx-controls"><div class="fx-subs" role="group" aria-label="Sub-parts"></div><span class="fx-btns"><button type="button" class="ghost fx-play">▶ Walk through</button><button type="button" class="ghost fx-reset">⤢ Full figure</button></span></div>
+        <div class="fx-detail" aria-live="polite"></div>
+      </div>
+
+      <h3 id="framework-pipeline">Pipeline explorer</h3>
+      <p class="hint-text">The full pipeline from the paper. Pick a part (A, B or C), then a component, to zoom in.</p>
+      <div class="fx card-box" id="fx-pipeline">
+        <div class="fx-steps" role="group" aria-label="Pipeline parts"></div>
+        <div class="fx-stage"><div class="fx-view">
+          <img src="assets/cats/fw-pipeline.jpg" width="2398" height="1318" alt="CaTS pipeline: (A) demo-to-robot plan adaptation, (B) hierarchical tactile supervision, (C) program synthesis and local closed-loop execution">
+          <div class="fx-hole" aria-hidden="true"></div>
+        </div><div class="fx-bar"><i></i></div></div>
+        <div class="fx-controls"><div class="fx-subs" role="group" aria-label="Components"></div><span class="fx-btns"><button type="button" class="ghost fx-play">▶ Walk through</button><button type="button" class="ghost fx-reset">⤢ Full figure</button></span></div>
+        <div class="fx-detail" aria-live="polite"></div>
+      </div>
 
       <h3 id="plan">A · Demo-to-robot plan adaptation</h3>
       <p>CaTS processes the demonstration's object and hand streams in parallel: the object branch segments targets (SAM3) and estimates 6-DoF poses (F2G-Pose); the hand branch propagates hand masks (SAM 2.1), estimates 2D keypoints (RTMPose) and lifts them to 3D joints with local depth. Changes in hand–object relative motion and contact divide the demonstration into ordered stages, each with a subgoal, a motion intent and the contacts to establish, maintain or release.</p>
